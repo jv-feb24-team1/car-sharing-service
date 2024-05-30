@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: vyshynskyi
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: chat_id
+                  type: bigint
+              - column:
+                  name: subscribe
+                  type: bit
+                  defaultValueBoolean: false
+                  constraints:
+                    nullable: false
