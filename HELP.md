@@ -8,13 +8,13 @@
 ## Pull Request Rules
 1. **Branching**: Create a new branch for each feature or bug fix.
    ```
-   git checkout -b {issue-number}-your-feature-name
+   git checkout -b your-feature-name
     ```
 2. **Description**: Provide a clear description of the changes and the problem they solve.
 3. **Keyword**: The keyword should be the first element in the name, indicating the type of change 
    the PR introduces. 
     ```
-   Add - {issue number} - New entity user added
+   Add - New entity user added
     ```
    **Here's a table of standard keywords and their meanings:**
 
