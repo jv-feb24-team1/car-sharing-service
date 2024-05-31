@@ -22,8 +22,8 @@ import org.hibernate.annotations.SoftDelete;
 @Setter
 @SoftDelete
 @RequiredArgsConstructor
-@ToString(exclude = {"carId", "userId"})
-@EqualsAndHashCode(exclude = {"carId", "userId"})
+@ToString(exclude = {"car", "user"})
+@EqualsAndHashCode(exclude = {"car", "user"})
 public class Rental {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,9 +38,9 @@ public class Rental {
     @Column(name = "actual_return_date")
     private LocalDate actualReturnDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Car carId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Car car;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User userId;
+    private User user;
 }
