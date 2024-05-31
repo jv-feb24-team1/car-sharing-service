@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changes/chernonog/create-users-table.yaml
   - include:
       file: db/changelog/changes/chernonog/insert-users-into-users.yaml
+  - include:
+      file: /db/changelog/changes/chopyk/create-cars-table.yaml
