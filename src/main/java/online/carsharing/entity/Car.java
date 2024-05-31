@@ -24,15 +24,20 @@ public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
     private String model;
+
     @Column(nullable = false)
     private String brand;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Type type;
+
     @Column(nullable = false)
     private int inventory;
+
     @Column(nullable = false)
     private BigDecimal dailyFee;
 }
