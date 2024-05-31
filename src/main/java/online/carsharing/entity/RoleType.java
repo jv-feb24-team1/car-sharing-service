@@ -1,6 +1,6 @@
 package online.carsharing.entity;
 
-public enum RoleName {
+public enum RoleType {
     MANAGER,
     CUSTOMER
 }

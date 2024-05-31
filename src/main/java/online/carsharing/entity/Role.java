@@ -28,10 +28,10 @@ public class Role implements GrantedAuthority {
     private Long id;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private RoleName name;
+    private RoleType type;
 
     @Override
     public String getAuthority() {
-        return "ROLE_" + name.name();
+        return "ROLE_" + type.name();
     }
 }

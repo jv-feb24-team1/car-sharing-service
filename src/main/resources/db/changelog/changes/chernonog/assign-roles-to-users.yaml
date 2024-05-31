@@ -11,7 +11,7 @@ databaseChangeLog:
                   valueNumeric: (SELECT id FROM users WHERE email = 'customer@example.com')
               - column:
                   name: role_id
-                  valueNumeric: (SELECT id FROM roles WHERE name = 'CUSTOMER')
+                  valueNumeric: (SELECT id FROM roles WHERE type = 'CUSTOMER')
         - insert:
             tableName: users_roles
             columns:
@@ -20,4 +20,4 @@ databaseChangeLog:
                   valueNumeric: (SELECT id FROM users WHERE email = 'manager@example.com')
               - column:
                   name: role_id
-                  valueNumeric: (SELECT id FROM roles WHERE name = 'MANAGER')
+                  valueNumeric: (SELECT id FROM roles WHERE type = 'MANAGER')

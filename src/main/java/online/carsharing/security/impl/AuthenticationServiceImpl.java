@@ -9,7 +9,7 @@ import online.carsharing.dto.request.user.UserRegisterRequestDto;
 import online.carsharing.dto.response.user.UserLoginResponseDto;
 import online.carsharing.dto.response.user.UserResponseDto;
 import online.carsharing.entity.Role;
-import online.carsharing.entity.RoleName;
+import online.carsharing.entity.RoleType;
 import online.carsharing.entity.User;
 import online.carsharing.exception.UserAlreadyExistsException;
 import online.carsharing.mapper.UserMapper;
@@ -42,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     + registerDto.getEmail() + " already exists");
         }
         User user = userMapper.toUser(registerDto);
-        Role role = roleRepository.findByName(RoleName.CUSTOMER).orElseThrow(() ->
+        Role role = roleRepository.findByType(RoleType.CUSTOMER).orElseThrow(() ->
                 new NoSuchElementException("Role CUSTOMER not found"));
         Set<Role> roles = new HashSet<>();
         roles.add(role);
