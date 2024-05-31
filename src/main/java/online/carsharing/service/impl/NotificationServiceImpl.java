@@ -1,8 +1,11 @@
 package online.carsharing.service.impl;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
+import online.carsharing.repository.RentalRepository;
 import online.carsharing.service.NotificationService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -13,12 +16,13 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Controller
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
+    @Autowired
+    private RentalRepository rentalRepository;
 
-    @Value("${bot.botname}")
-    private String botName;
+    private Dotenv dotenv = Dotenv.load();
+    private String botName = dotenv.get("BOTNAME");
 
-    @Value("${bot.bottoken}")
-    private String botToken;
+    private String botToken = dotenv.get("BOTTOKEN");
 
     @Override
     public String getBotUsername() {
@@ -34,23 +38,38 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String command = update.getMessage().getText();
-            switch (command) {
-                case "/rentalStatus":
-                    currentRentals(update);
-                    break;
-                default:
-                    sendMessage(update, "Unknown command");
-                    break;
+            String command = update.getMessage().getText().trim();
+
+            if (command.startsWith("/returnStatus")) {
+                String[] parts = command.split(" ");
+                if (parts.length == 2) {
+                    try {
+                        Long id = Long.parseLong(parts[1]);
+                        returnStatus(update, id);
+                    } catch (NumberFormatException e) {
+                        sendMessage(update, "Invalid ID format. Please use a number.");
+                    }
+                } else {
+                    sendMessage(update, "Invalid command format. Please use /returnStatus <ID>.");
+                }
+            } else {
+                sendMessage(update, "Unknown command");
             }
         }
     }
+
     @Override
-    public void currentRentals(Update update) {
+    public void returnStatus(Update update, Long id) {
         try {
-            sendMessage(update, "Hi1");
+            LocalDate returnDate = rentalRepository.returnDateCheckById(id);
+            if (returnDate != null) {
+                sendMessage(update, "Return Date: "
+                        + returnDate.toString());
+            } else {
+                sendMessage(update, "No rental found with ID: " + id);
+            }
         } catch (Exception e) {
-            sendMessage(update, "Error fetching user info");
+            sendMessage(update, "Error fetching rental info");
             e.printStackTrace();
         }
     }
