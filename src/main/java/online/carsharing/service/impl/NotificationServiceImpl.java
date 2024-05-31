@@ -1,11 +1,11 @@
 package online.carsharing.service.impl;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.repository.RentalRepository;
 import online.carsharing.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -19,10 +19,11 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Autowired
     private RentalRepository rentalRepository;
 
-    private Dotenv dotenv = Dotenv.load();
-    private String botName = dotenv.get("BOTNAME");
+    @Value("${bot.botname}")
+    private String botName;
 
-    private String botToken = dotenv.get("BOTTOKEN");
+    @Value("${bot.bottoken}")
+    private String botToken;
 
     @Override
     public String getBotUsername() {
