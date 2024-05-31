@@ -1,12 +1,10 @@
 package online.carsharing.dto.update;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 @Data
 public class CarUpdateDto {
-    @PositiveOrZero
-    @NotNull
+    @Min(value = 0)
     private int inventory;
 }

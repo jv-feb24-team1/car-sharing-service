@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import online.carsharing.dto.request.CarRequestDto;
+import online.carsharing.dto.request.CreateCarRequestDto;
 import online.carsharing.dto.response.CarResponseDto;
 import online.carsharing.dto.update.CarUpdateDto;
 import online.carsharing.service.CarService;
@@ -31,7 +31,7 @@ public class CarController {
     @Operation(summary = "Creates car by dto request",
             description = "Creates car by your created data")
     @PostMapping
-    public CarResponseDto createCar(@RequestBody @Valid CarRequestDto requestDto) {
+    public CarResponseDto createCar(@RequestBody @Valid CreateCarRequestDto requestDto) {
         return carService.save(requestDto);
     }
 

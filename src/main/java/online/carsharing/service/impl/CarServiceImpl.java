@@ -1,9 +1,8 @@
 package online.carsharing.service.impl;
 
-import jakarta.transaction.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import online.carsharing.dto.request.CarRequestDto;
+import online.carsharing.dto.request.CreateCarRequestDto;
 import online.carsharing.dto.response.CarResponseDto;
 import online.carsharing.dto.update.CarUpdateDto;
 import online.carsharing.entity.Car;
@@ -21,7 +20,7 @@ public class CarServiceImpl implements CarService {
     private final CarRepository carRepository;
 
     @Override
-    public CarResponseDto save(CarRequestDto newCar) {
+    public CarResponseDto save(CreateCarRequestDto newCar) {
         Car car = carMapper.toCar(newCar);
         return carMapper.toDto(carRepository.save(car));
     }
@@ -33,20 +32,19 @@ public class CarServiceImpl implements CarService {
                 .toList();
     }
 
-    @Transactional
     @Override
     public CarResponseDto updateById(Long carId, CarUpdateDto carUpdateDto) {
-        checkExistence(carId);
-        Car car = carRepository.getReferenceById(carId);
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find car by id " + carId));
         car.setInventory(carUpdateDto.getInventory());
         return carMapper.toDto(carRepository.save(car));
     }
 
-    @Transactional
     @Override
     public CarResponseDto getById(Long carId) {
-        checkExistence(carId);
-        return carMapper.toDto(carRepository.getReferenceById(carId));
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find car by id " + carId));
+        return carMapper.toDto(car);
     }
 
     @Override
