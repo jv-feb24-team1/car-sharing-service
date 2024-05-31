@@ -14,7 +14,7 @@
 3. **Keyword**: The keyword should be the first element in the name, indicating the type of change 
    the PR introduces. 
     ```
-   Add - New entity user added
+   Add New entity user added
     ```
    **Here's a table of standard keywords and their meanings:**
 
