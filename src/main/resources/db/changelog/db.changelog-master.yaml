@@ -3,3 +3,7 @@ databaseChangeLog:
       file: db/changelog/changes/chernonog/create-users-table.yaml
   - include:
       file: db/changelog/changes/chernonog/insert-users-into-users.yaml
+  - include:
+      file: db/changelog/changes/klimovych/create-rental-table.yaml
+  - include:
+      file: db/changelog/changes/klimovych/insert-rentals-into-rental.yaml

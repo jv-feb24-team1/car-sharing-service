@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-rentals
+      author: nklimovych
+      changes:
+        - insert:
+            tableName: rentals
+            columns:
+              - column:
+                  name: rental_date
+                  valueDate: "2024-02-01"
+              - column:
+                  name: return_date
+                  valueDate: "2024-02-10"
+              - column:
+                  name: actual_return_date
+                  valueDate: "2024-02-09"
+              - column:
+                  name: car_id
+                  value: "1"
+              - column:
+                  name: user_id
+                  value: "1"
+        - insert:
+            tableName: rentals
+            columns:
+              - column:
+                  name: rental_date
+                  valueDate: "2024-04-01"
+              - column:
+                  name: return_date
+                  valueDate: "2024-04-05"
+              - column:
+                  name: actual_return_date
+                  valueDate: "2024-04-05"
+              - column:
+                  name: car_id
+                  value: "2"
+              - column:
+                  name: user_id
+                  value: "1"
