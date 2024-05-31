@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import online.carsharing.dto.request.user.UserLoginRequestDto;
 import online.carsharing.dto.request.user.UserRegisterRequestDto;
+import online.carsharing.dto.response.user.UserLoginResponseDto;
 import online.carsharing.dto.response.user.UserResponseDto;
 import online.carsharing.security.AuthenticationService;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,5 +28,16 @@ public class AuthenticationController {
     )
     public UserResponseDto registerUser(@Valid @RequestBody UserRegisterRequestDto registerDto) {
         return authenticationService.register(registerDto);
+    }
+
+    @Operation(
+            summary = "User Login",
+            description = "This endpoint allows an existing user to log in"
+                    + " by providing the necessary "
+                    + "details such as email and password."
+    )
+    @PostMapping("/login")
+    public UserLoginResponseDto loginUser(@Valid @RequestBody UserLoginRequestDto loginDto) {
+        return authenticationService.login(loginDto);
     }
 }

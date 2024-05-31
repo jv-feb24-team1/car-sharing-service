@@ -42,6 +42,13 @@ public class GlobalExeptionHandler extends ResponseEntityExceptionHandler {
         return getStandartTemplateOfResponseEntity(ex, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(InvalidInputDataException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleInvalidInputDataException(
+            InvalidInputDataException ex) {
+        return getStandartTemplateOfResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> getStandartTemplateOfResponseEntity(
             Throwable e,
             HttpStatus httpStatus) {
