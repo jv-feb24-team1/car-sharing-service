@@ -49,6 +49,13 @@ public class GlobalExeptionHandler extends ResponseEntityExceptionHandler {
         return getStandartTemplateOfResponseEntity(ex, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleEntityNotFoundException(
+            EntityNotFoundException ex) {
+        return getStandartTemplateOfResponseEntity(ex, HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<ErrorResponse> getStandartTemplateOfResponseEntity(
             Throwable e,
             HttpStatus httpStatus) {

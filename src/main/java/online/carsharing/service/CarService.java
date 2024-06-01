@@ -1,9 +1,9 @@
 package online.carsharing.service;
 
 import java.util.List;
-import online.carsharing.dto.request.CreateCarRequestDto;
-import online.carsharing.dto.response.CarResponseDto;
-import online.carsharing.dto.update.CarUpdateDto;
+import online.carsharing.dto.request.car.CreateCarRequestDto;
+import online.carsharing.dto.response.car.CarResponseDto;
+import online.carsharing.dto.update.car.CarUpdateDto;
 import org.springframework.data.domain.Pageable;
 
 public interface CarService {

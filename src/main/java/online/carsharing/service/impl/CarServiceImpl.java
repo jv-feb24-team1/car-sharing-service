@@ -2,9 +2,9 @@ package online.carsharing.service.impl;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import online.carsharing.dto.request.CreateCarRequestDto;
-import online.carsharing.dto.response.CarResponseDto;
-import online.carsharing.dto.update.CarUpdateDto;
+import online.carsharing.dto.request.car.CreateCarRequestDto;
+import online.carsharing.dto.response.car.CarResponseDto;
+import online.carsharing.dto.update.car.CarUpdateDto;
 import online.carsharing.entity.Car;
 import online.carsharing.exception.EntityNotFoundException;
 import online.carsharing.mapper.CarMapper;
@@ -34,17 +34,14 @@ public class CarServiceImpl implements CarService {
 
     @Override
     public CarResponseDto updateById(Long carId, CarUpdateDto carUpdateDto) {
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find car by id " + carId));
+        Car car = findCarById(carId);
         car.setInventory(carUpdateDto.getInventory());
         return carMapper.toDto(carRepository.save(car));
     }
 
     @Override
     public CarResponseDto getById(Long carId) {
-        Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new EntityNotFoundException("Can't find car by id " + carId));
-        return carMapper.toDto(car);
+        return carMapper.toDto(findCarById(carId));
     }
 
     @Override
@@ -57,5 +54,10 @@ public class CarServiceImpl implements CarService {
         if (!carRepository.existsById(id)) {
             throw new EntityNotFoundException("Can't find car by id " + id);
         }
+    }
+
+    private Car findCarById(Long carId) {
+        return carRepository.findById(carId)
+                .orElseThrow(() -> new EntityNotFoundException("Can't find car by id " + carId));
     }
 }
