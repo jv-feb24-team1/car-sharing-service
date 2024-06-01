@@ -11,6 +11,6 @@ public class UserLoginRequestDto {
     @NotBlank(message = "Email is mandatory")
     private String email;
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, message = "Password should be at least 8 characters long")
+    @Size(min = 8, max = 20, message = "Password should be between 8 and 20 characters long")
     private String password;
 }

@@ -23,7 +23,7 @@ public class UserRegisterRequestDto {
     private String lastName;
 
     @NotBlank(message = "Password is mandatory")
-    @Size(min = 8, message = "Password should be at least 8 characters long")
+    @Size(min = 8, max = 20, message = "Password should be between 8 and 20 characters long")
     private String password;
 
     @NotBlank(message = "Confirm password is mandatory")
