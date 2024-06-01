@@ -4,7 +4,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.entity.Car;
 import online.carsharing.entity.UserChatId;
-import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.user.UserChatIdRepository;
 import online.carsharing.service.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
 
     private final UserChatIdRepository userChatIdRepository;
-    private final CarRepository carRepository;
 
     @Value("${bot.botname}")
     private String botName;
@@ -46,25 +44,14 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
             if (command.startsWith("/addMe")) {
                 addUserChatId(update);
-            } else if (command.startsWith("/getModel")) {
-                String[] parts = command.split(" ");
-                if (parts.length == 2) {
-                    try {
-                        Long id = Long.parseLong(parts[1]);
-                        returnStatus(update, id);
-                    } catch (NumberFormatException e) {
-                        sendMessage(update, "Invalid ID format. Please use a number.");
-                    }
-                } else {
-                    sendMessage(update, "Invalid command format. Please use /returnStatus <ID>.");
-                }
             } else {
                 sendMessage(update, "Unknown command");
             }
         }
     }
 
-    private void addUserChatId(Update update) {
+    @Override
+    public void addUserChatId(Update update) {
         Long userId = update.getMessage().getFrom().getId().longValue();
         Long chatId = update.getMessage().getChatId();
         UserChatId userChatId = userChatIdRepository.findByUserId(userId);
@@ -75,21 +62,6 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         userChatId.setChatId(chatId);
         userChatIdRepository.save(userChatId);
         sendMessage(update, "You have been added successfully.");
-    }
-
-    @Override
-    public void returnStatus(Update update, Long id) {
-        try {
-            String model = carRepository.modelCheckById(id);
-            if (model != null) {
-                sendMessage(update, "Model: " + model);
-            } else {
-                sendMessage(update, "No car found with ID: " + id);
-            }
-        } catch (Exception e) {
-            sendMessage(update, "Error fetching car info");
-            e.printStackTrace();
-        }
     }
 
     @Override
