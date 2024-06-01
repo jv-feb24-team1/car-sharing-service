@@ -1,4 +1,4 @@
-package online.carsharing.dto.request;
+package online.carsharing.dto.request.car;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
