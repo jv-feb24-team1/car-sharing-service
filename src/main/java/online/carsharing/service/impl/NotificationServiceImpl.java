@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
+    private static final String CAR_CREATION_TG_RESPONSE =
+            "New car added! *%s*\nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
 
     private final UserChatIdRepository userChatIdRepository;
 
@@ -79,17 +81,20 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Override
     public void carCreation(Car car) {
         List<Long> chatIds = userChatIdRepository.findAllChatIds();
-        String messageText = "New car available: " + car.toString();
+        String messageText = String.format(CAR_CREATION_TG_RESPONSE,
+                car.getModel(), car.getBrand(),
+                car.getType().toString(),
+                car.getDailyFee().toString());
 
         for (Long chatId : chatIds) {
             if (chatId != null) {
                 try {
-                    execute(SendMessage
-                            .builder()
-                            .chatId(chatId
-                                    .toString())
+                    SendMessage message = SendMessage.builder()
+                            .chatId(chatId.toString())
                             .text(messageText)
-                            .build());
+                            .parseMode("Markdown")
+                            .build();
+                    execute(message);
                 } catch (TelegramApiException e) {
                     e.printStackTrace();
                 }
