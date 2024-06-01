@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-users
+      author: chernonog
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "customer@example.com"
+              - column:
+                  name: first_name
+                  value: "Customer"
+              - column:
+                  name: last_name
+                  value: "User"
+              - column:
+                  name: password
+                  value: "$2a$10$OtAaqYntWR2UF0gUatPjeOcNrfqu43TeiazwKWsF5BXmomhf782A6"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: email
+                  value: "manager@example.com"
+              - column:
+                  name: first_name
+                  value: "Manager"
+              - column:
+                  name: last_name
+                  value: "User"
+              - column:
+                  name: password
+                  value: "$2a$10$uEJxyb55CcQQVu1pj8WSVe8hKgR3RJz3yARX8DTbIkqzs"
