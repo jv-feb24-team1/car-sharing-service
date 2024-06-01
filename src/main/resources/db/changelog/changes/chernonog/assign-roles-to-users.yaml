@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: assign-roles-to-users
+      author: chernonog
+      changes:
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: (SELECT id FROM users WHERE email = 'customer@example.com')
+              - column:
+                  name: role_id
+                  valueNumeric: (SELECT id FROM roles WHERE type = 'CUSTOMER')
+        - insert:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  valueNumeric: (SELECT id FROM users WHERE email = 'manager@example.com')
+              - column:
+                  name: role_id
+                  valueNumeric: (SELECT id FROM roles WHERE type = 'MANAGER')
