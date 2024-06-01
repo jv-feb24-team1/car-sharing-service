@@ -28,34 +28,44 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
     private final CarService carService;
 
-    @Operation(summary = "Creates car by dto request", description = "Creates car by your created data")
+    //ATTENTION! DO NOT MERGE!
+
+    @Operation(summary = "Creates car by dto request",
+            description = "Creates car by your created data")
     @PostMapping
     public CarResponseDto createCar(@RequestBody @Valid CreateCarRequestDto requestDto) {
         return carService.save(requestDto);
     }
 
-    @Operation(summary = "Updates car by id", description = "Updates only field inventory in car")
+    @Operation(summary = "Updates car by id",
+            description = "Updates only field inventory in car")
     @PutMapping("/{id}")
-    public CarResponseDto updateCar(@PathVariable Long id, @RequestBody @Valid CarUpdateDto updateDto) {
+    public CarResponseDto updateCar(@PathVariable Long id,
+                                    @RequestBody @Valid CarUpdateDto updateDto) {
         return carService.updateById(id, updateDto);
     }
 
-    @Operation(summary = "Deletes car by id", description = "Deletes car by its id")
+    @Operation(summary = "Deletes car by id",
+            description = "Deletes car by its id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteCarById(@PathVariable Long id) {
         carService.deleteById(id);
     }
 
-    @Operation(summary = "Returns a page of cars", description = "Gets a list of all available cars in service")
+    @Operation(summary = "Returns a page of cars",
+            description = "Gets a list of all available cars in service")
     @GetMapping
     public List<CarResponseDto> getAll(Pageable pageable) {
         return carService.findAll(pageable);
     }
 
-    @Operation(summary = "Gets car by id", description = "Gets a car from db")
+    @Operation(summary = "Gets car by id",
+            description = "Gets a car from db")
     @GetMapping("/{id}")
     public CarResponseDto getById(@PathVariable Long id) {
         return carService.getById(id);
     }
+
+    //ATTENTION! DO NOT MERGE!
 }

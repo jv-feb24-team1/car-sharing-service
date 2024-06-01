@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-roles-table
+      author: vyshynskyi
+      changes:
+        - createTable:
+            tableName: users_chat_id
+            columns:
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false

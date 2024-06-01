@@ -1,8 +1,11 @@
 package online.carsharing.service.impl;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.entity.Car;
+import online.carsharing.entity.UserChatId;
 import online.carsharing.repository.car.CarRepository;
+import online.carsharing.repository.user.UserChatIdRepository;
 import online.carsharing.service.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -16,6 +19,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
 
+    private final UserChatIdRepository userChatIdRepository;
     private final CarRepository carRepository;
 
     @Value("${bot.botname}")
@@ -23,8 +27,6 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Value("${bot.bottoken}")
     private String botToken;
-
-    private static final long CHAT_ID = 4247255427L;
 
     @Override
     public String getBotUsername() {
@@ -42,7 +44,9 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         if (update.hasMessage() && update.getMessage().hasText()) {
             String command = update.getMessage().getText().trim();
 
-            if (command.startsWith("/returnStatus")) {
+            if (command.startsWith("/addMe")) {
+                addUserChatId(update);
+            } else if (command.startsWith("/getModel")) {
                 String[] parts = command.split(" ");
                 if (parts.length == 2) {
                     try {
@@ -58,6 +62,19 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
                 sendMessage(update, "Unknown command");
             }
         }
+    }
+
+    private void addUserChatId(Update update) {
+        Long userId = update.getMessage().getFrom().getId().longValue();
+        Long chatId = update.getMessage().getChatId();
+        UserChatId userChatId = userChatIdRepository.findByUserId(userId);
+        if (userChatId == null) {
+            userChatId = new UserChatId();
+            userChatId.setUserId(userId);
+        }
+        userChatId.setChatId(chatId);
+        userChatIdRepository.save(userChatId);
+        sendMessage(update, "You have been added successfully.");
     }
 
     @Override
@@ -89,11 +106,22 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Override
     public void carCreation(Car car) {
-        try {
-            String messageText = "New car available: " + car.toString();
-            execute(SendMessage.builder().chatId(String.valueOf(-4247255427L)).text(messageText).build());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
+        List<Long> chatIds = userChatIdRepository.findAllChatIds();
+        String messageText = "New car available: " + car.toString();
+
+        for (Long chatId : chatIds) {
+            if (chatId != null) {
+                try {
+                    execute(SendMessage
+                            .builder()
+                            .chatId(chatId
+                                    .toString())
+                            .text(messageText)
+                            .build());
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
