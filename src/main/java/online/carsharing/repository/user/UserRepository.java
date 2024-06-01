@@ -1,4 +1,4 @@
-package online.carsharing.repository;
+package online.carsharing.repository.user;
 
 import java.util.Optional;
 import online.carsharing.entity.User;
@@ -10,4 +10,3 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
 }
-
