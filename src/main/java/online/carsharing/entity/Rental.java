@@ -29,13 +29,12 @@ public class Rental {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, name = "rental_date")
+    @Column(nullable = false)
     private LocalDate rentalDate;
 
-    @Column(nullable = false, name = "return_date")
+    @Column(nullable = false)
     private LocalDate returnDate;
 
-    @Column(name = "actual_return_date")
     private LocalDate actualReturnDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
