@@ -7,9 +7,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 public interface NotificationService {
     void sendMessage(Update update, String text);
 
-    void carCreation(Car car);
+    void createCar(Car car);
 
-    void rentalCreation(Rental rental);
+    void createRental(Rental rental);
 
     void addUserChatId(Update update);
 }

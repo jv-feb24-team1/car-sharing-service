@@ -93,7 +93,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     @Override
-    public void carCreation(Car car) {
+    public void createCar(Car car) {
         List<Long> chatIds = userChatIdRepository.findAllChatIds();
         String messageText = String.format(CAR_CREATION_TG_RESPONSE,
                 car.getModel(), car.getBrand(),
@@ -117,7 +117,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     @Override
-    public void rentalCreation(Rental rental) {
+    public void createRental(Rental rental) {
         List<Long> chatIds = userChatIdRepository.findAllChatIds();
         String email = userRepository.findById(rental.getUser().getId())
                 .map(User::getEmail)

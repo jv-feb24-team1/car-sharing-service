@@ -6,7 +6,7 @@ import online.carsharing.dto.request.rental.RentalRequestDto;
 import online.carsharing.dto.response.rental.RentalResponseDto;
 
 public interface RentalService {
-    RentalResponseDto save(Long userId, RentalRequestDto rentalDto);
+    RentalResponseDto save(RentalRequestDto rentalDto);
 
     RentalResponseDto getById(Long rentalId);
 

@@ -2,6 +2,7 @@ package online.carsharing.mapper;
 
 import online.carsharing.config.MapperConfig;
 import online.carsharing.dto.request.rental.RentalRequestDto;
+import online.carsharing.dto.response.rental.RentalResponseDto;
 import online.carsharing.entity.Rental;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,5 +21,5 @@ public interface RentalMapper {
 
     @Mapping(source = "car.id", target = "carId")
     @Mapping(source = "user.id", target = "userId")
-    RentalRequestDto toDto(Rental rental);
+    RentalResponseDto toDto(Rental rental);
 }

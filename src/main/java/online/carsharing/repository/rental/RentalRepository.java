@@ -1,4 +1,4 @@
-package online.carsharing.repository;
+package online.carsharing.repository.rental;
 
 import online.carsharing.entity.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;
