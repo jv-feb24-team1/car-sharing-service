@@ -10,18 +10,21 @@ import online.carsharing.exception.EntityNotFoundException;
 import online.carsharing.mapper.CarMapper;
 import online.carsharing.repository.car.CarRepository;
 import online.carsharing.service.CarService;
+import online.carsharing.service.NotificationService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class CarServiceImpl implements CarService {
+    private final NotificationService notificationService;
     private final CarMapper carMapper;
     private final CarRepository carRepository;
 
     @Override
     public CarResponseDto save(CreateCarRequestDto newCar) {
         Car car = carMapper.toCar(newCar);
+        notificationService.carCreation(car);
         return carMapper.toDto(carRepository.save(car));
     }
 

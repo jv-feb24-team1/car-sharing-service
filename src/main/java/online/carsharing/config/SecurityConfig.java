@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/webjars/**")
                         .permitAll()
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 ))
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session -> session.sessionCreationPolicy(

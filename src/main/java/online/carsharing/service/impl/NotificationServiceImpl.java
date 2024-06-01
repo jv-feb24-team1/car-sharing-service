@@ -1,29 +1,30 @@
 package online.carsharing.service.impl;
 
-import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
-import online.carsharing.repository.RentalRepository;
+import online.carsharing.entity.Car;
+import online.carsharing.repository.car.CarRepository;
 import online.carsharing.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-@Controller
+@Service
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
-    @Autowired
-    private RentalRepository rentalRepository;
+
+    private final CarRepository carRepository;
 
     @Value("${bot.botname}")
     private String botName;
 
     @Value("${bot.bottoken}")
     private String botToken;
+
+    private static final long CHAT_ID = 4247255427L;
 
     @Override
     public String getBotUsername() {
@@ -62,15 +63,14 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Override
     public void returnStatus(Update update, Long id) {
         try {
-            LocalDate returnDate = rentalRepository.returnDateCheckById(id);
-            if (returnDate != null) {
-                sendMessage(update, "Return Date: "
-                        + returnDate.toString());
+            String model = carRepository.modelCheckById(id);
+            if (model != null) {
+                sendMessage(update, "Model: " + model);
             } else {
-                sendMessage(update, "No rental found with ID: " + id);
+                sendMessage(update, "No car found with ID: " + id);
             }
         } catch (Exception e) {
-            sendMessage(update, "Error fetching rental info");
+            sendMessage(update, "Error fetching car info");
             e.printStackTrace();
         }
     }
@@ -86,5 +86,14 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
             e.printStackTrace();
         }
     }
-}
 
+    @Override
+    public void carCreation(Car car) {
+        try {
+            String messageText = "New car available: " + car.toString();
+            execute(SendMessage.builder().chatId(String.valueOf(-4247255427L)).text(messageText).build());
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
+        }
+    }
+}

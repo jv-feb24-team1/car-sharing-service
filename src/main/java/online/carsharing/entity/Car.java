@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.SoftDelete;
 
 @Getter
@@ -20,6 +21,7 @@ import org.hibernate.annotations.SoftDelete;
 @Entity
 @SoftDelete
 @Table(name = "cars")
+@ToString
 public class Car {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
