@@ -28,8 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class CarController {
     private final CarService carService;
 
-    //ATTENTION! DO NOT MERGE!
-
     @Operation(summary = "Creates car by dto request",
             description = "Creates car by your created data")
     @PostMapping
@@ -66,6 +64,4 @@ public class CarController {
     public CarResponseDto getById(@PathVariable Long id) {
         return carService.getById(id);
     }
-
-    //ATTENTION! DO NOT MERGE!
 }

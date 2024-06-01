@@ -7,7 +7,7 @@ databaseChangeLog:
             tableName: users_chat_id
             columns:
               - column:
-                  name: user_id
+                  name: user_telegram_id
                   type: bigint
                   constraints:
                     nullable: false

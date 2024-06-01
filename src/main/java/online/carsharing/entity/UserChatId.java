@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class UserChatId {
     @Id
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_telegram_id", nullable = false)
     private Long userId;
 
     @Column(name = "chat_id", nullable = false)

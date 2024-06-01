@@ -3,6 +3,7 @@ package online.carsharing.service.impl;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.entity.Car;
+import online.carsharing.entity.Rental;
 import online.carsharing.entity.UserChatId;
 import online.carsharing.repository.user.UserChatIdRepository;
 import online.carsharing.service.NotificationService;
@@ -19,6 +20,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
             "New car added! \nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
+    private static final String RENTAL_CREATION_TG_RESPONSE =
+            "New rental created! \nRental Date: *%s*\nReturn Date: *%s*\nCar: *%s*\nTaken by: *%s*";
+    private static final String TG_COMMAND_ADD_ME = "/addMe";
+    private static final String TG_COMMAND_START = "Start";
+    private static final String TG_RESPONSE_UNKNOWN_COMMAND = "Unknown command";
+    private static final String TG_RESPONSE_ADDED_SUCCESSFULLY = "Unknown command";
 
     private final UserChatIdRepository userChatIdRepository;
 
@@ -44,10 +51,10 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         if (update.hasMessage() && update.getMessage().hasText()) {
             String command = update.getMessage().getText().trim();
 
-            if (command.startsWith("/addMe") || command.startsWith("Start")) {
+            if (command.startsWith("/addMe") || command.startsWith(TG_COMMAND_START)) {
                 addUserChatId(update);
             } else {
-                sendMessage(update, "Unknown command");
+                sendMessage(update, TG_RESPONSE_UNKNOWN_COMMAND);
             }
         }
     }
@@ -63,7 +70,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         }
         userChatId.setChatId(chatId);
         userChatIdRepository.save(userChatId);
-        sendMessage(update, "You have been added successfully.");
+        sendMessage(update, TG_RESPONSE_ADDED_SUCCESSFULLY);
     }
 
     @Override
@@ -86,6 +93,30 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
                 car.getType().toString(),
                 car.getDailyFee().toString());
 
+        for (Long chatId : chatIds) {
+            if (chatId != null) {
+                try {
+                    SendMessage message = SendMessage.builder()
+                            .chatId(chatId.toString())
+                            .text(messageText)
+                            .parseMode("Markdown")
+                            .build();
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void rentalCreation(Rental rental) {
+        List<Long> chatIds = userChatIdRepository.findAllChatIds();
+        String messageText = String.format(RENTAL_CREATION_TG_RESPONSE,
+                rental.getRentalDate(),
+                rental.getReturnDate(),
+                rental.getCar().getModel(),
+                rental.getUser().getEmail());
         for (Long chatId : chatIds) {
             if (chatId != null) {
                 try {
