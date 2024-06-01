@@ -4,8 +4,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.entity.Car;
 import online.carsharing.entity.Rental;
+import online.carsharing.entity.User;
 import online.carsharing.entity.UserChatId;
+import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.user.UserChatIdRepository;
+import online.carsharing.repository.user.UserRepository;
 import online.carsharing.service.NotificationService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -26,8 +29,12 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     private static final String TG_COMMAND_START = "Start";
     private static final String TG_RESPONSE_UNKNOWN_COMMAND = "Unknown command";
     private static final String TG_RESPONSE_ADDED_SUCCESSFULLY = "Unknown command";
+    private static final String TG_RESPONSE_EMAIL_NOTFOUND =
+            "User does not have an Email in DB Be contact client immediately!";
 
     private final UserChatIdRepository userChatIdRepository;
+    private final UserRepository userRepository;
+    private final CarRepository carRepository;
 
     @Value("${bot.botname}")
     private String botName;
@@ -51,7 +58,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         if (update.hasMessage() && update.getMessage().hasText()) {
             String command = update.getMessage().getText().trim();
 
-            if (command.startsWith("/addMe") || command.startsWith(TG_COMMAND_START)) {
+            if (command.startsWith(TG_COMMAND_ADD_ME) || command.startsWith(TG_COMMAND_START)) {
                 addUserChatId(update);
             } else {
                 sendMessage(update, TG_RESPONSE_UNKNOWN_COMMAND);
@@ -112,11 +119,15 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Override
     public void rentalCreation(Rental rental) {
         List<Long> chatIds = userChatIdRepository.findAllChatIds();
+        String email = userRepository.findById(rental.getUser().getId())
+                .map(User::getEmail)
+                .orElse(TG_RESPONSE_EMAIL_NOTFOUND);
         String messageText = String.format(RENTAL_CREATION_TG_RESPONSE,
                 rental.getRentalDate(),
                 rental.getReturnDate(),
-                rental.getCar().getModel(),
-                rental.getUser().getEmail());
+                carRepository.modelCheckById(rental.getCar().getId()),
+                email
+        );
         for (Long chatId : chatIds) {
             if (chatId != null) {
                 try {
