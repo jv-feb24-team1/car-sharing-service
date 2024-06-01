@@ -19,13 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
     @Operation(
             summary = "User Registration",
             description = "This endpoint allows for the registration of a "
                     + "new user by providing the necessary"
                     + " details such as username, password, and email."
     )
+    @PostMapping("/register")
     public UserResponseDto registerUser(@Valid @RequestBody UserRegisterRequestDto registerDto) {
         return authenticationService.register(registerDto);
     }
