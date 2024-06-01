@@ -13,7 +13,6 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @ComponentScan("online.carsharing")
 @RequiredArgsConstructor
 public class BotConfig {
-
     private final NotificationServiceImpl notificationServiceImpl;
 
     @Bean
