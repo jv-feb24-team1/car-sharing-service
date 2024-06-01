@@ -18,7 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
-            "New car added! *%s*\nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
+            "New car added! \nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
 
     private final UserChatIdRepository userChatIdRepository;
 
@@ -44,7 +44,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         if (update.hasMessage() && update.getMessage().hasText()) {
             String command = update.getMessage().getText().trim();
 
-            if (command.startsWith("/addMe")) {
+            if (command.startsWith("/addMe") || command.startsWith("Start")) {
                 addUserChatId(update);
             } else {
                 sendMessage(update, "Unknown command");
