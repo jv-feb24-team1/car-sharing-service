@@ -35,7 +35,7 @@ public class UserController {
                     + " Requires the new role information to be provided in the request body."
     )
     @PutMapping("/{id}/role")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     public RoleChangeResponseDto updateUserRoleById(
             @PathVariable Long id,
             @Valid @RequestBody RoleChangeRequestDto requestDto
