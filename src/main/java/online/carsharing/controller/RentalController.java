@@ -2,6 +2,7 @@ package online.carsharing.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.dto.request.rental.ActualReturnDateDto;
@@ -9,8 +10,6 @@ import online.carsharing.dto.request.rental.RentalRequestDto;
 import online.carsharing.dto.response.rental.RentalResponseDto;
 import online.carsharing.entity.User;
 import online.carsharing.service.RentalService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +34,10 @@ public class RentalController {
     )
     @PostMapping
     @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
-    public ResponseEntity<RentalResponseDto> createRental(
-            @RequestBody RentalRequestDto requestDto
+    public RentalResponseDto createRental(
+            @Valid @RequestBody RentalRequestDto requestDto
     ) {
-        RentalResponseDto responseDto = rentalService.save(requestDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+        return rentalService.save(requestDto);
     }
 
     @Operation(
@@ -50,15 +48,14 @@ public class RentalController {
                     + "A user with the 'ROLE_MANAGER' can get any user rentals, "
                     + "while a user with the role 'ROLE_CUSTOMER' can only get their rentals"
     )
-    @GetMapping
+    @GetMapping("/")
     @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_CUSTOMER')")
-    public ResponseEntity<List<RentalResponseDto>> getAllUserRentalsByIsActive(
+    public List<RentalResponseDto> getAllUserRentalsByIsActive(
             @AuthenticationPrincipal User user,
             @RequestParam(required = false) Long userId,
             @RequestParam(value = "is_active") Boolean isActive
     ) {
-        List<RentalResponseDto> rentals = rentalService.getUserRentals(user, userId, isActive);
-        return new ResponseEntity<>(rentals, HttpStatus.OK);
+        return rentalService.getUserRentals(user, userId, isActive);
     }
 
     @Operation(
@@ -68,9 +65,10 @@ public class RentalController {
     )
     @GetMapping("/{rentalId}")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<RentalResponseDto> getRental(@PathVariable Long rentalId) {
-        RentalResponseDto rental = rentalService.getById(rentalId);
-        return new ResponseEntity<>(rental, HttpStatus.OK);
+    public RentalResponseDto getRental(
+            @PathVariable Long rentalId
+    ) {
+        return rentalService.getById(rentalId);
     }
 
     @Operation(
@@ -81,10 +79,10 @@ public class RentalController {
     )
     @PostMapping("/{rentalId}/return")
     @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<RentalResponseDto> setActualReturnDate(
+    public RentalResponseDto setActualReturnDate(
             @PathVariable Long rentalId,
-            @RequestBody ActualReturnDateDto requestDto) {
-        RentalResponseDto responseDto = rentalService.setActualReturnDate(rentalId, requestDto);
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+            @Valid @RequestBody ActualReturnDateDto requestDto
+    ) {
+        return rentalService.setActualReturnDate(rentalId, requestDto);
     }
 }
