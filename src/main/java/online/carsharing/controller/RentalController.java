@@ -46,8 +46,8 @@ public class RentalController {
             description = "Retrieve rentals for a specific user based on their active status. "
                     + "If userId is provided, it retrieves rentals for the specified user. "
                     + "If userId is not provided, it retrieves rentals for the authenticated user. "
-                    + "A user with the 'ROLE_MANAGER' can get any user rentals, "
-                    + "while a user with the role 'ROLE_CUSTOMER' can only get their rentals"
+                    + "A user with the 'MANAGER' can get any user rentals, "
+                    + "while a user with the role 'CUSTOMER' can only get their rentals"
     )
     @GetMapping("/")
     @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")

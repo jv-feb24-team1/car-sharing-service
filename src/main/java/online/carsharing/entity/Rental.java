@@ -35,7 +35,7 @@ public class Rental {
 
     private LocalDate actualReturnDate;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Car car;
 
     @ManyToOne(fetch = FetchType.LAZY)

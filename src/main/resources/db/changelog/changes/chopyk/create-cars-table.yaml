@@ -38,7 +38,7 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: deleted
+                  name: is_deleted
                   type: bit
                   defaultValueBoolean: false
                   constraints:
