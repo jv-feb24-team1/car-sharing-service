@@ -25,6 +25,16 @@ public class NotificationSchedulerImp implements NotificationScheduler {
             "Overdue rental! \nRental Date: %s\nReturn Date: %s\nCar: %s\nUser: %s";
     private static final String NO_RENTALS =
             "No rentals overdue today!";
+    private static final String TIME_MORNING_REMINDER =
+            "0 30 8 * * ?";
+    private static final String TIME_EVENING_REMINDER =
+            "0 30 16 * * ?";
+    private static final String RENTAL_WARNING_TG_HEADER =
+            "Warning overdue rentals detected!";
+    private static final String RENTAL_WARNING_TG_TOTAL_OVERDUE =
+            "Total rentals overdue: ";
+    private static final String LOGGER_TOTAL_OVERDUE =
+            "Checked for overdue rentals. Total found: ";
 
     private final NotificationService notificationService;
     private final RentalRepository rentalRepository;
@@ -33,14 +43,14 @@ public class NotificationSchedulerImp implements NotificationScheduler {
 
     @Override
     @Async
-    @Scheduled(cron = "0 55 3 * * ?")
+    @Scheduled(cron = TIME_MORNING_REMINDER)
     public void morningReminder() {
         rentalReminder();
     }
 
     @Override
     @Async
-    @Scheduled(cron = "0 30 16 * * ?")
+    @Scheduled(cron = TIME_EVENING_REMINDER)
     public void eveningReminder() {
         rentalReminder();
     }
@@ -65,7 +75,7 @@ public class NotificationSchedulerImp implements NotificationScheduler {
         if (overdueRentalDtos.isEmpty()) {
             notificationService.sendNotification(NO_RENTALS);
         } else {
-            notificationService.sendNotification("Warning overdue rentals detected!");
+            notificationService.sendNotification(RENTAL_WARNING_TG_HEADER);
             for (RentalResponseDto dto : overdueRentalDtos) {
                 String carModel = carRepository.findById(dto.getCarId())
                         .map(car -> car.getModel())
@@ -78,10 +88,10 @@ public class NotificationSchedulerImp implements NotificationScheduler {
                         carModel, userEmail);
                 notificationService.sendNotification(message);
             }
-            notificationService.sendNotification("Total rentals overdue: "
+            notificationService.sendNotification(RENTAL_WARNING_TG_TOTAL_OVERDUE
                     + overdueRentalDtos.size());
         }
 
-        logger.info("Checked for overdue rentals. Total found: " + overdueRentalDtos.size());
+        logger.info(LOGGER_TOTAL_OVERDUE + overdueRentalDtos.size());
     }
 }
