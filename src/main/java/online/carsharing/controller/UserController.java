@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.dto.request.role.RoleChangeRequestDto;
-import online.carsharing.dto.request.user.UserRegisterRequestDto;
+import online.carsharing.dto.request.user.UserUpdateRequestDto;
 import online.carsharing.dto.response.role.RoleChangeResponseDto;
 import online.carsharing.dto.response.user.UserResponseDto;
 import online.carsharing.entity.User;
@@ -35,7 +35,7 @@ public class UserController {
                     + " Requires the new role information to be provided in the request body."
     )
     @PutMapping("/{id}/role")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public RoleChangeResponseDto updateUserRoleById(
             @PathVariable Long id,
             @Valid @RequestBody RoleChangeRequestDto requestDto
@@ -48,7 +48,7 @@ public class UserController {
             description = "Retrieves the profile information of the currently authenticated user."
     )
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
     public UserResponseDto getUserProfile(@AuthenticationPrincipal User currentUser) {
         return userService.getCurrentUserProfile(currentUser.getId());
     }
@@ -61,9 +61,9 @@ public class UserController {
     )
 
     @PatchMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
     public UserResponseDto updateUserProfile(
-            @Valid @RequestBody UserRegisterRequestDto requestDto,
+            @Valid @RequestBody UserUpdateRequestDto requestDto,
             @AuthenticationPrincipal User currentUser
     ) {
         return userService.updateCurrentUserProfile(currentUser.getId(), requestDto);

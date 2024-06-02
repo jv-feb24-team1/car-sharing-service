@@ -14,13 +14,11 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.SoftDelete;
 
 @Entity
 @Table(name = "rentals")
 @Getter
 @Setter
-@SoftDelete
 @RequiredArgsConstructor
 @ToString(exclude = {"car", "user"})
 @EqualsAndHashCode(exclude = {"car", "user"})
@@ -42,4 +40,6 @@ public class Rental {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    private boolean active;
 }
