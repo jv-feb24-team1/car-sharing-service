@@ -33,7 +33,7 @@ public class RentalController {
                     + "Requires the rental details in the request body."
     )
     @PostMapping
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
     public RentalResponseDto createRental(
             @Valid @RequestBody RentalRequestDto requestDto
     ) {
@@ -49,7 +49,7 @@ public class RentalController {
                     + "while a user with the role 'ROLE_CUSTOMER' can only get their rentals"
     )
     @GetMapping("/")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER', 'ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER', 'CUSTOMER')")
     public List<RentalResponseDto> getAllUserRentalsByIsActive(
             @AuthenticationPrincipal User user,
             @RequestParam(required = false) Long userId,
@@ -64,7 +64,7 @@ public class RentalController {
                     + "Requires the rental id in the path parameter."
     )
     @GetMapping("/{rentalId}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public RentalResponseDto getRental(
             @PathVariable Long rentalId
     ) {
@@ -78,7 +78,7 @@ public class RentalController {
                     + "the actual return date in the request body."
     )
     @PostMapping("/{rentalId}/return")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public RentalResponseDto setActualReturnDate(
             @PathVariable Long rentalId,
             @Valid @RequestBody ActualReturnDateDto requestDto
