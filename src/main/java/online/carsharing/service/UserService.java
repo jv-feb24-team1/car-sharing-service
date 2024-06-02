@@ -1,7 +1,7 @@
 package online.carsharing.service;
 
 import online.carsharing.dto.request.role.RoleChangeRequestDto;
-import online.carsharing.dto.request.user.UserRegisterRequestDto;
+import online.carsharing.dto.request.user.UserUpdateRequestDto;
 import online.carsharing.dto.response.role.RoleChangeResponseDto;
 import online.carsharing.dto.response.user.UserResponseDto;
 
@@ -11,5 +11,5 @@ public interface UserService {
 
     UserResponseDto getCurrentUserProfile(Long userId);
 
-    UserResponseDto updateCurrentUserProfile(Long userId, UserRegisterRequestDto requestDto);
+    UserResponseDto updateCurrentUserProfile(Long userId, UserUpdateRequestDto requestDto);
 }
