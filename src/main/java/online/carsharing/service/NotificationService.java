@@ -12,4 +12,6 @@ public interface NotificationService {
     void createRental(Rental rental);
 
     void addUserChatId(Update update);
+
+    void sendNotification(String message);
 }
