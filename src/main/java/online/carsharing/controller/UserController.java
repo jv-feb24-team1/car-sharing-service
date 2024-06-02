@@ -35,7 +35,7 @@ public class UserController {
                     + " Requires the new role information to be provided in the request body."
     )
     @PutMapping("/{id}/role")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public RoleChangeResponseDto updateUserRoleById(
             @PathVariable Long id,
             @Valid @RequestBody RoleChangeRequestDto requestDto
@@ -48,7 +48,7 @@ public class UserController {
             description = "Retrieves the profile information of the currently authenticated user."
     )
     @GetMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
     public UserResponseDto getUserProfile(@AuthenticationPrincipal User currentUser) {
         return userService.getCurrentUserProfile(currentUser.getId());
     }
@@ -61,7 +61,7 @@ public class UserController {
     )
 
     @PatchMapping("/me")
-    @PreAuthorize("hasAnyRole('ROLE_MANAGER','ROLE_CUSTOMER')")
+    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
     public UserResponseDto updateUserProfile(
             @Valid @RequestBody UserUpdateRequestDto requestDto,
             @AuthenticationPrincipal User currentUser
