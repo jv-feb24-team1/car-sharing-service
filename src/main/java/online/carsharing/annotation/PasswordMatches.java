@@ -7,8 +7,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import online.carsharing.validator.PasswordMatchesValidator;
+import online.carsharing.validator.PasswordMatchesValidatorForUpdate;
 
-@Constraint(validatedBy = PasswordMatchesValidator.class)
+@Constraint(validatedBy = {PasswordMatchesValidator.class, PasswordMatchesValidatorForUpdate.class})
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PasswordMatches {

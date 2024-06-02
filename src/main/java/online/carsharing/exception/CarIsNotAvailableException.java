@@ -4,8 +4,4 @@ public class CarIsNotAvailableException extends RuntimeException {
     public CarIsNotAvailableException(String message) {
         super(message);
     }
-
-    public CarIsNotAvailableException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

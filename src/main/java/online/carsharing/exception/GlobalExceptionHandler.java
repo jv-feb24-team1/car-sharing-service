@@ -56,6 +56,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getStandartTemplateOfResponseEntity(ex, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(CarIsNotAvailableException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> handleCarIsNotAvailableException(
+            CarIsNotAvailableException ex) {
+        return getStandartTemplateOfResponseEntity(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleUnauthorizedAccessException(
+            UnauthorizedAccessException ex) {
+        return getStandartTemplateOfResponseEntity(ex, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> getStandartTemplateOfResponseEntity(
             Throwable e,
             HttpStatus httpStatus) {

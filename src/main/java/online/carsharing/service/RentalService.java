@@ -1,20 +1,17 @@
 package online.carsharing.service;
 
-import java.time.LocalDate;
 import java.util.List;
+import online.carsharing.dto.request.rental.ActualReturnDateDto;
 import online.carsharing.dto.request.rental.RentalRequestDto;
 import online.carsharing.dto.response.rental.RentalResponseDto;
+import online.carsharing.entity.User;
 
 public interface RentalService {
     RentalResponseDto save(RentalRequestDto rentalDto);
 
     RentalResponseDto getById(Long rentalId);
 
-    List<RentalResponseDto> getByUserId(Long userId);
+    List<RentalResponseDto> getUserRentals(User user, Long userId, boolean isActive);
 
-    List<RentalResponseDto> findAll();
-
-    RentalRequestDto setActualReturnDate(Long rentalId, LocalDate actualDate);
-
-    void delete(Long id);
+    RentalResponseDto setActualReturnDate(Long rentalId, ActualReturnDateDto actualDate);
 }
