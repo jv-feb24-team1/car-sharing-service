@@ -41,5 +41,6 @@ public class Rental {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
-    private boolean active;
+    @Column(nullable = false)
+    private boolean active = true;
 }

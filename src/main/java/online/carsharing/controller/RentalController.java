@@ -33,11 +33,12 @@ public class RentalController {
                     + "Requires the rental details in the request body."
     )
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER','CUSTOMER')")
+    @PreAuthorize("hasRole('CUSTOMER')")
     public RentalResponseDto createRental(
+            @AuthenticationPrincipal User user,
             @Valid @RequestBody RentalRequestDto requestDto
     ) {
-        return rentalService.save(requestDto);
+        return rentalService.save(user, requestDto);
     }
 
     @Operation(
@@ -59,7 +60,7 @@ public class RentalController {
     }
 
     @Operation(
-            summary = "Get Rental by ID",
+            summary = "Get Rental by id",
             description = "Retrieves details of a specific rental by its id. "
                     + "Requires the rental id in the path parameter."
     )
