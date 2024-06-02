@@ -1,9 +1,7 @@
 package online.carsharing.dto.request.rental;
 
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDate;
-
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import lombok.Data;
 
 @Data
