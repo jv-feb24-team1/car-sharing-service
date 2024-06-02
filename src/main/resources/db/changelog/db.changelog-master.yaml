@@ -15,5 +15,3 @@ databaseChangeLog:
       file: db/changelog/changes/chernonog/insert-roles-into-roles.yaml
   - include:
       file: db/changelog/changes/chernonog/assign-roles-to-users.yaml
-  - include:
-      file: db/changelog/changes/klimovych/insert-users-into-users.yaml
