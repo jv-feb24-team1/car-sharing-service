@@ -40,8 +40,8 @@ databaseChangeLog:
                     references: users(id)
                     nullable: false
               - column:
-                  name: deleted
+                  name: active
                   type: bit
-                  defaultValueBoolean: false
+                  defaultValueBoolean: true
                   constraints:
                     nullable: false
