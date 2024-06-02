@@ -56,8 +56,8 @@ public class NotificationSchedulerImp implements NotificationScheduler {
     }
 
     private void rentalReminder() {
-        LocalDate today = LocalDate.now();
-        List<Rental> overdueRentals = rentalRepository.findOverdueRentals(today);
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        List<Rental> overdueRentals = rentalRepository.findOverdueRentals(tomorrow);
 
         List<RentalResponseDto> overdueRentalDtos = overdueRentals.stream()
                 .map(rental -> {
