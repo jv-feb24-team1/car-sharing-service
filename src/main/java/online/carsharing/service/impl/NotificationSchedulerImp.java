@@ -26,7 +26,7 @@ public class NotificationSchedulerImp implements NotificationScheduler {
     private static final String NO_RENTALS =
             "No rentals overdue today!";
     private static final String TIME_MORNING_REMINDER =
-            "0 30 8 * * ?";
+            "00 30 8 * * ?";
     private static final String TIME_EVENING_REMINDER =
             "0 30 16 * * ?";
     private static final String RENTAL_WARNING_TG_HEADER =
@@ -35,6 +35,7 @@ public class NotificationSchedulerImp implements NotificationScheduler {
             "Total rentals overdue: ";
     private static final String LOGGER_TOTAL_OVERDUE =
             "Checked for overdue rentals. Total found: ";
+    private static final int DAY = 1;
 
     private final NotificationService notificationService;
     private final RentalRepository rentalRepository;
@@ -56,7 +57,7 @@ public class NotificationSchedulerImp implements NotificationScheduler {
     }
 
     private void rentalReminder() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate tomorrow = LocalDate.now().plusDays(DAY);
         List<Rental> overdueRentals = rentalRepository.findOverdueRentals(tomorrow);
 
         List<RentalResponseDto> overdueRentalDtos = overdueRentals.stream()
