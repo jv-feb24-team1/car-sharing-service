@@ -10,7 +10,7 @@ databaseChangeLog:
                   name: user_telegram_id
                   type: bigint
                   constraints:
-                    nullable: false
+                    primaryKey: true
               - column:
                   name: chat_id
                   type: bigint
