@@ -2,10 +2,9 @@ package online.carsharing.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
-import online.carsharing.dto.response.rental.RentalResponseDto;
 import online.carsharing.entity.Rental;
+import online.carsharing.mapper.RentalMapper;
 import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.rental.RentalRepository;
 import online.carsharing.repository.user.UserRepository;
@@ -41,6 +40,7 @@ public class NotificationSchedulerImp implements NotificationScheduler {
     private final RentalRepository rentalRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
+    private final RentalMapper rentalMapper;
 
     @Override
     @Async
@@ -60,39 +60,24 @@ public class NotificationSchedulerImp implements NotificationScheduler {
         LocalDate tomorrow = LocalDate.now().plusDays(DAY);
         List<Rental> overdueRentals = rentalRepository.findOverdueRentals(tomorrow);
 
-        List<RentalResponseDto> overdueRentalDtos = overdueRentals.stream()
-                .map(rental -> {
-                    RentalResponseDto dto = new RentalResponseDto();
-                    dto.setId(rental.getId());
-                    dto.setRentalDate(rental.getRentalDate());
-                    dto.setReturnDate(rental.getReturnDate());
-                    dto.setActualReturnDate(rental.getActualReturnDate());
-                    dto.setCarId(rental.getCar().getId());
-                    dto.setUserId(rental.getUser().getId());
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
-        if (overdueRentalDtos.isEmpty()) {
+        if (overdueRentals.isEmpty()) {
             notificationService.sendNotification(NO_RENTALS);
         } else {
             notificationService.sendNotification(RENTAL_WARNING_TG_HEADER);
-            for (RentalResponseDto dto : overdueRentalDtos) {
-                String carModel = carRepository.findById(dto.getCarId())
+            for (Rental rental : overdueRentals) {
+                String carModel = carRepository.findById(rental.getCar().getId())
                         .map(car -> car.getModel())
                         .orElse("Unknown Car");
-                String userEmail = userRepository.findById(dto.getUserId())
+                String userEmail = userRepository.findById(rental.getUser().getId())
                         .map(user -> user.getEmail())
                         .orElse("Unknown User");
                 String message = String.format(EXPIRED_RENTALS,
-                        dto.getRentalDate(), dto.getReturnDate(),
+                        rental.getRentalDate(), rental.getReturnDate(),
                         carModel, userEmail);
                 notificationService.sendNotification(message);
             }
             notificationService.sendNotification(RENTAL_WARNING_TG_TOTAL_OVERDUE
-                    + overdueRentalDtos.size());
+                    + overdueRentals.size());
         }
-
-        logger.info(LOGGER_TOTAL_OVERDUE + overdueRentalDtos.size());
     }
 }

@@ -22,7 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
-            "New car added! \nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
+            "New car added! \nBrand: *%s*\nModel: *%s*\nType: *%s*\nDaily fee: *%s*";
     private static final String RENTAL_CREATION_TG_RESPONSE =
             "New rental created! \nRental Date: *%s*\nReturn Date: *%s*\nCar: *%s*\nTaken by: *%s*";
     private static final String TG_COMMAND_ADD_ME = "/addMe";
@@ -69,7 +69,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Override
     public void attachUserToChatId(Update update) {
-        Long userId = update.getMessage().getFrom().getId().longValue();
+        Long userId = update.getMessage().getFrom().getId();
         Long chatId = update.getMessage().getChatId();
         UserChatId userChatId = userChatIdRepository.findByUserId(userId);
         if (userChatId == null) {
@@ -96,34 +96,15 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     @Override
     public void createCarNotification(Car car) {
         String messageText = String.format(CAR_CREATION_TG_RESPONSE,
-                car.getModel(), car.getBrand(),
+                car.getBrand(),
+                car.getModel(),
                 car.getType().toString(),
                 car.getDailyFee().toString());
-
-        for (Long chatId : chatIds) {
-            if (chatId != null) {
-                try {
-                    SendMessage message = SendMessage.builder()
-                            .chatId(chatId.toString())
-                            .text(messageText)
-                            .parseMode("Markdown")
-                            .build();
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void createRentalNotification(Rental rental) {
-        List<Long> chatIds = userChatIdRepository.findAllChatIds();
         sendMessageToAllChats(messageText);
     }
 
     @Override
-    public void createRental(Rental rental) {
+    public void createRentalNotification(Rental rental) {
         String email = userRepository.findById(rental.getUser().getId())
                 .map(User::getEmail)
                 .orElse(TG_RESPONSE_EMAIL_NOTFOUND);
