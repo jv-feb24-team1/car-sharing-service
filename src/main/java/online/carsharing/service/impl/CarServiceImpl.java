@@ -24,7 +24,7 @@ public class CarServiceImpl implements CarService {
     @Override
     public CarResponseDto save(CreateCarRequestDto newCar) {
         Car car = carMapper.toCar(newCar);
-        notificationService.createCar(car);
+        notificationService.createCarNotification(car);
         return carMapper.toDto(carRepository.save(car));
     }
 
