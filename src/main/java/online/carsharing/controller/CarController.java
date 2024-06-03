@@ -44,10 +44,10 @@ public class CarController {
     }
 
     @Operation(summary = "Deletes car by id",
-            description = "Deletes car by its is")
+            description = "Deletes car by its id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteBookById(@PathVariable Long id) {
+    public void deleteCarById(@PathVariable Long id) {
         carService.deleteById(id);
     }
 
