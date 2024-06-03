@@ -16,6 +16,7 @@ import online.carsharing.mapper.RentalMapper;
 import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.rental.RentalRepository;
 import online.carsharing.repository.user.UserRepository;
+import online.carsharing.service.NotificationService;
 import online.carsharing.service.RentalService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class RentalServiceImpl implements RentalService {
     private static final int INVENTORY_ADJUSTMENT = 1;
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
+    private final NotificationService notificationService;
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
@@ -49,6 +51,7 @@ public class RentalServiceImpl implements RentalService {
         Rental savedRental = rentalRepository.save(rental);
         RentalResponseDto responseDto = rentalMapper.toDto(savedRental);
         responseDto.setId(savedRental.getId());
+        notificationService.createRentalNotification(rental);
         return responseDto;
     }
 
