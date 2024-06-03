@@ -13,13 +13,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @Entity
-@SoftDelete
+@SQLDelete(sql = "UPDATE cars SET is_deleted = true WHERE id=?")
+@SQLRestriction(value = "is_deleted=false")
 @Table(name = "cars")
 @ToString
 public class Car {
@@ -42,4 +44,7 @@ public class Car {
 
     @Column(nullable = false)
     private BigDecimal dailyFee;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 }

@@ -16,4 +16,8 @@ databaseChangeLog:
   - include:
       file: db/changelog/changes/chernonog/assign-roles-to-users.yaml
   - include:
+      file: db/changelog/changes/klimovych/insert-cars-into-db.yaml.yaml
+  - include:
+      file: db/changelog/changes/klimovych/insert-rentals-into-db.yaml
+  - include:
       file: db/changelog/changes/vyshynskyi/create-users-chat_id-table.yaml

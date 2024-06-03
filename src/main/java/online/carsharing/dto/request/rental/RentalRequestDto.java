@@ -3,8 +3,10 @@ package online.carsharing.dto.request.rental;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import lombok.Data;
+import online.carsharing.annotation.ValidRentalDates;
 
 @Data
+@ValidRentalDates
 public class RentalRequestDto {
     @NotNull(message = "Rental date is mandatory")
     private LocalDate rentalDate;
@@ -14,7 +16,4 @@ public class RentalRequestDto {
 
     @NotNull(message = "Car id is mandatory")
     private Long carId;
-
-    @NotNull(message = "User id is mandatory")
-    private Long userId;
 }

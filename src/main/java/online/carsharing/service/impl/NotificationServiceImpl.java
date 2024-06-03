@@ -28,7 +28,8 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     private static final String TG_COMMAND_ADD_ME = "/addMe";
     private static final String TG_COMMAND_START = "Start";
     private static final String TG_RESPONSE_UNKNOWN_COMMAND = "Unknown command";
-    private static final String TG_RESPONSE_ADDED_SUCCESSFULLY = "Unknown command";
+    private static final String TG_RESPONSE_ADDED_SUCCESSFULLY =
+            "Registration successful! Welcome aboard!";
     private static final String TG_RESPONSE_EMAIL_NOTFOUND =
             "User does not have an Email in DB Be contact client immediately!";
 
@@ -59,7 +60,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
             String command = update.getMessage().getText().trim();
 
             if (command.startsWith(TG_COMMAND_ADD_ME) || command.startsWith(TG_COMMAND_START)) {
-                addUserChatId(update);
+                attachUserToChatId(update);
             } else {
                 sendMessage(update, TG_RESPONSE_UNKNOWN_COMMAND);
             }
@@ -67,7 +68,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     @Override
-    public void addUserChatId(Update update) {
+    public void attachUserToChatId(Update update) {
         Long userId = update.getMessage().getFrom().getId().longValue();
         Long chatId = update.getMessage().getChatId();
         UserChatId userChatId = userChatIdRepository.findByUserId(userId);
@@ -93,11 +94,31 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     @Override
-    public void createCar(Car car) {
+    public void createCarNotification(Car car) {
         String messageText = String.format(CAR_CREATION_TG_RESPONSE,
                 car.getModel(), car.getBrand(),
                 car.getType().toString(),
                 car.getDailyFee().toString());
+
+        for (Long chatId : chatIds) {
+            if (chatId != null) {
+                try {
+                    SendMessage message = SendMessage.builder()
+                            .chatId(chatId.toString())
+                            .text(messageText)
+                            .parseMode("Markdown")
+                            .build();
+                    execute(message);
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void createRentalNotification(Rental rental) {
+        List<Long> chatIds = userChatIdRepository.findAllChatIds();
         sendMessageToAllChats(messageText);
     }
 
