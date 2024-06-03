@@ -58,8 +58,7 @@ public class CarController {
         return carService.findAll(pageable);
     }
 
-    @Operation(summary = "Gets car by id",
-            description = "Gets a car from db")
+    @Operation(summary = "Gets car by id", description = "Gets a car from db")
     @GetMapping("/{id}")
     public CarResponseDto getById(@PathVariable Long id) {
         return carService.getById(id);
