@@ -12,15 +12,11 @@ import org.mapstruct.Mappings;
 public interface RentalMapper {
 
     @Mappings({
-            @Mapping(source = "carId", target = "car.id"),
-            @Mapping(source = "userId", target = "user.id"),
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "actualReturnDate", ignore = true),
             @Mapping(target = "active", ignore = true)
     })
     Rental toEntity(RentalRequestDto rentalDto);
 
-    @Mapping(source = "car.id", target = "carId")
-    @Mapping(source = "user.id", target = "userId")
     RentalResponseDto toDto(Rental rental);
 }
