@@ -16,7 +16,6 @@ import online.carsharing.mapper.RentalMapper;
 import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.rental.RentalRepository;
 import online.carsharing.repository.user.UserRepository;
-import online.carsharing.service.NotificationService;
 import online.carsharing.service.RentalService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -26,16 +25,15 @@ import org.springframework.stereotype.Service;
 public class RentalServiceImpl implements RentalService {
     private static final int INVENTORY_MIN_VALUE = 1;
     private static final int INVENTORY_ADJUSTMENT = 1;
-    private static final String MANAGER = "MANAGER";
+    private static final String ROLE_MANAGER = "ROLE_MANAGER";
 
-    private final NotificationService notificationService;
     private final UserRepository userRepository;
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
     private final RentalMapper rentalMapper;
 
     @Override
-    public RentalResponseDto save(RentalRequestDto rentalDto) {
+    public RentalResponseDto save(User user, RentalRequestDto rentalDto) {
         Car car = getCar(rentalDto.getCarId());
         if (car.getInventory() < INVENTORY_MIN_VALUE) {
             throw new CarIsNotAvailableException("Currently, this car is unavailable");
@@ -43,16 +41,14 @@ public class RentalServiceImpl implements RentalService {
         car.setInventory(car.getInventory() - INVENTORY_ADJUSTMENT);
         carRepository.save(car);
 
-        User user = getUser(rentalDto.getUserId());
+        User existingUser = checkIfUserExists(user.getId());
         Rental rental = rentalMapper.toEntity(rentalDto);
-        rental.setUser(user);
+        rental.setUser(existingUser);
         rental.setCar(car);
 
         Rental savedRental = rentalRepository.save(rental);
         RentalResponseDto responseDto = rentalMapper.toDto(savedRental);
         responseDto.setId(savedRental.getId());
-
-        notificationService.createRental(rental);
         return responseDto;
     }
 
@@ -64,14 +60,18 @@ public class RentalServiceImpl implements RentalService {
 
     @Override
     public List<RentalResponseDto> getUserRentals(User user, Long userId, boolean isActive) {
-        if (userId != null && isNotManager(user) && !userId.equals(user.getId())) {
+        if (userId != null && !isManager(user) && !userId.equals(user.getId())) {
             throw new UnauthorizedAccessException(
                     "User does not have access to rentals of another user");
         }
 
-        List<Rental> rentals = (userId != null)
-                ? rentalRepository.findAllByUserIdAndActive(userId, isActive)
-                : rentalRepository.findAllByUserIdAndActive(user.getId(), isActive);
+        List<Rental> rentals;
+        if (isManager(user) && userId == null) {
+            rentals = rentalRepository.findAllByActive(isActive);
+        } else {
+            Long rentalsUserId = (userId != null) ? userId : user.getId();
+            rentals = rentalRepository.findAllByUserIdAndActive(rentalsUserId, isActive);
+        }
 
         return rentals.stream()
                       .map(rentalMapper::toDto)
@@ -97,7 +97,7 @@ public class RentalServiceImpl implements RentalService {
         return rentalMapper.toDto(savedRental);
     }
 
-    private User getUser(Long userId) {
+    private User checkIfUserExists(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
                 new EntityNotFoundException("User not found with id " + userId));
     }
@@ -112,9 +112,9 @@ public class RentalServiceImpl implements RentalService {
                 new EntityNotFoundException("Rental not found with id " + rentalId));
     }
 
-    private boolean isNotManager(User user) {
+    private boolean isManager(User user) {
         return user.getAuthorities().stream()
                    .map(GrantedAuthority::getAuthority)
-                   .noneMatch(authority -> authority.equals(MANAGER));
+                   .anyMatch(authority -> authority.equals(ROLE_MANAGER));
     }
 }
