@@ -32,4 +32,4 @@ databaseChangeLog:
                   value: "User"
               - column:
                   name: password
-                  value: "$2a$10$uEJxyb55CcQQVu1pj8WSVe8hKgR3RJz3yARX8DTbIkqzs"
+                  value: "$2a$10$3NQB4Ktd9I9lJJQjSKaOm.wu6qfIM8KQiclfOTqCUaQiscPw0nK7i"
