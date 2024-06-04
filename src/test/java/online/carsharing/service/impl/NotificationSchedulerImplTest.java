@@ -15,6 +15,7 @@ import online.carsharing.repository.user.UserRepository;
 import online.carsharing.service.NotificationScheduler;
 import online.carsharing.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -48,6 +49,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
+    @DisplayName("Send notification in the morning if there is no overdue rental")
     public void sendMorningNotification_NoOverdueRentals_OK() {
         mockedOverdueRentals.clear();
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -59,6 +61,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
+    @DisplayName("Send notification in the evening if there is no overdue rental")
     public void sendEveningNotification_NoOverdueRentals_OK() {
         mockedOverdueRentals.clear();
         LocalDate tomorrow = LocalDate.now().plusDays(1);
@@ -70,6 +73,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
+    @DisplayName("Send notification if overdue rental exist")
     void sendEveningNotification_OverdueRentalExist_OK() {
         Car car = createCar();
         User user = createUser();
