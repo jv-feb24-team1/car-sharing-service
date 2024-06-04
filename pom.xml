@@ -26,6 +26,7 @@
         <telegram.version>6.9.7.1</telegram.version>
         <junit.version>5.10.2</junit.version>
         <mockito.version>5.12.0</mockito.version>
+        <stripe.version>25.9.0</stripe.version>
     </properties>
     <dependencies>
         <dependency>
@@ -124,6 +125,11 @@
             <artifactId>h2</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>${stripe.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
             <version>${telegram.version}</version>
@@ -139,6 +145,10 @@
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
     <build>
