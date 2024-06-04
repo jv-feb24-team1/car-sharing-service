@@ -5,14 +5,13 @@ import online.carsharing.dto.request.payment.PaymentRequestDto;
 import online.carsharing.dto.response.payment.PaymentResponseDto;
 import online.carsharing.entity.Rental;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetails;
 
 public interface PaymentService {
 
     List<PaymentResponseDto> getPayments(
-            UserDetails userDetails, Long userId, Pageable pageable);
+            Long userId, Long requestParamUserId, Pageable pageable);
 
-    PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto);
+    PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto, Long userId);
 
     void markPaymentAsPaid(String sessionId);
 
