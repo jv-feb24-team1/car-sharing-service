@@ -17,6 +17,7 @@ import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.rental.RentalRepository;
 import online.carsharing.repository.user.UserRepository;
 import online.carsharing.service.NotificationService;
+import online.carsharing.service.PaymentService;
 import online.carsharing.service.RentalService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class RentalServiceImpl implements RentalService {
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
     private final RentalMapper rentalMapper;
+    private final PaymentService paymentService;
 
     @Override
     public RentalResponseDto save(User user, RentalRequestDto rentalDto) {
@@ -91,6 +93,8 @@ public class RentalServiceImpl implements RentalService {
 
         rental.setActualReturnDate(requestDto.getActualReturnDate());
         rental.setActive(false);
+
+        paymentService.createOverduePaymentIfNecessary(rental);
 
         Car car = rental.getCar();
         car.setInventory(car.getInventory() + INVENTORY_ADJUSTMENT);
