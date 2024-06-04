@@ -23,6 +23,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 public class NotificationSchedulerImplTest {
+    public static final String CAR_MODEL = "Model";
+    public static final String EMAIL = "email";
     @InjectMocks
     private NotificationSchedulerImpl scheduler;
 
@@ -102,13 +104,13 @@ public class NotificationSchedulerImplTest {
 
     private Car createCar() {
         Car car = new Car();
-        car.setModel("Model");
+        car.setModel(CAR_MODEL);
         return car;
     }
 
     private User createUser() {
         User user = new User();
-        user.setEmail("email");
+        user.setEmail(EMAIL);
         return user;
     }
 }
