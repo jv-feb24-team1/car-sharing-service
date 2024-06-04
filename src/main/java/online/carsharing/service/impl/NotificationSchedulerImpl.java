@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class NotificationSchedulerImpl implements NotificationScheduler {
+    private static final String EXPIRED_RENTALS =
+            "Overdue rental! \nRental Date: %s\nReturn Date: %s\nCar: %s\nUser: %s";
     private static final String CRON_MORNING_REMINDER =
             "0 30 8 * * ?";
     private static final String CRON_EVENING_REMINDER =
             "0 30 16 * * ?";
-    private static final String EXPIRED_RENTALS =
-            "Overdue rental! \nRental Date: %s\nReturn Date: %s\nCar: %s\nUser: %s";
     private static final int DAY = 1;
 
     private final NotificationService notificationService;
