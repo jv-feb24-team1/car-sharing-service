@@ -25,7 +25,6 @@
         <jjwt.version>0.11.5</jjwt.version>
         <testcontainers.version>1.19.7</testcontainers.version>
         <telegram.version>6.9.7.1</telegram.version>
-        <junit.version>5.10.2</junit.version>
         <mockito.version>5.12.0</mockito.version>
         <stripe.version>25.9.0</stripe.version>
     </properties>
@@ -153,7 +152,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${junit.version}</version>
+            <version>5.10.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
