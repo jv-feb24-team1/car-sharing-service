@@ -200,11 +200,11 @@ jobs:
 
 ## 👥 Contributors
 
-- **Mykola Chopyk**
-- **Yevhen Chernonog**
-- **Oleksii Haioviy**
-- **Nazar Klimovych**
-- **Vladyslav Vyshynskyi**
+- [**Mykola Chopyk**](https://github.com/Recdt)
+- [**Yevhen Chernonog**](https://github.com/SkillfulDev)
+- [**Oleksii Haioviy**](https://github.com/HAIOVYI)
+- [**Nazar Klimovych**](https://github.com/nklimovych)
+- [**Vladyslav Vyshynskyi**](https://github.com/azzilian)
 
 For more details, visit the [GitHub repository](https://github.com/jv-feb24-team1/car-sharing-service).
 
