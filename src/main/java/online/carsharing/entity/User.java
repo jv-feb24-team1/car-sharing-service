@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,6 +28,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Setter
 @RequiredArgsConstructor
 @ToString(exclude = {"password"})
+@SQLDelete(sql = "UPDATE cars SET is_deleted = true WHERE id=?")
+@SQLRestriction(value = "is_deleted=false")
 @EqualsAndHashCode
 public class User implements UserDetails {
     @Id
@@ -43,6 +47,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
+    private boolean isDeleted = false;
 
     @ManyToMany
     @JoinTable(
