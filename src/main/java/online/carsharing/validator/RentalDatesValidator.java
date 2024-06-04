@@ -11,7 +11,7 @@ public class RentalDatesValidator implements
 
     @Override
     public boolean isValid(RentalRequestDto rentalRequestDto, ConstraintValidatorContext context) {
-        return rentalRequestDto.getRentalDate().isAfter(LocalDate.now())
+        return !rentalRequestDto.getRentalDate().isBefore(LocalDate.now())
                 && rentalRequestDto.getReturnDate().isAfter(rentalRequestDto.getRentalDate());
     }
 }
