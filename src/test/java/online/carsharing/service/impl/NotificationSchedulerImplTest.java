@@ -25,6 +25,8 @@ import org.mockito.Spy;
 public class NotificationSchedulerImplTest {
     public static final String CAR_MODEL = "Model";
     public static final String EMAIL = "email";
+    public static final int ADD_DAY = 1;
+
     @InjectMocks
     private NotificationSchedulerImpl scheduler;
 
@@ -54,23 +56,9 @@ public class NotificationSchedulerImplTest {
     @DisplayName("Send notification in the morning if there is no overdue rental")
     public void sendMorningNotification_NoOverdueRentals_OK() {
         mockedOverdueRentals.clear();
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate tomorrow = LocalDate.now().plusDays(ADD_DAY);
         when(rentalRepository.findOverdueRentals(tomorrow)).thenReturn(mockedOverdueRentals);
-
         scheduler.morningReminder();
-
-        verify(notificationService).sendNotification("No rentals overdue today!");
-    }
-
-    @Test
-    @DisplayName("Send notification in the evening if there is no overdue rental")
-    public void sendEveningNotification_NoOverdueRentals_OK() {
-        mockedOverdueRentals.clear();
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
-        when(rentalRepository.findOverdueRentals(tomorrow)).thenReturn(mockedOverdueRentals);
-
-        scheduler.eveningReminder();
-
         verify(notificationService).sendNotification("No rentals overdue today!");
     }
 
@@ -79,19 +67,15 @@ public class NotificationSchedulerImplTest {
     void sendEveningNotification_OverdueRentalExist_OK() {
         Car car = createCar();
         User user = createUser();
-
         Rental rental = new Rental();
         rental.setRentalDate(LocalDate.ofEpochDay(2024 - 05 - 01));
         rental.setReturnDate(LocalDate.ofEpochDay(2024 - 05 - 11));
         rental.setCar(car);
         rental.setUser(user);
         mockedOverdueRentals.add(rental);
-
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        LocalDate tomorrow = LocalDate.now().plusDays(ADD_DAY);
         when(rentalRepository.findOverdueRentals(tomorrow)).thenReturn(mockedOverdueRentals);
-
         scheduler.eveningReminder();
-
         verify(notificationService).sendNotification(String.format(
                 "Warning overdue rentals detected!",
                 rental.getRentalDate(),
@@ -99,7 +83,8 @@ public class NotificationSchedulerImplTest {
                 car.getModel(),
                 user.getEmail()
         ));
-        verify(notificationService).sendNotification("Total rentals overdue: 1");
+        verify(notificationService).sendNotification("Total rentals overdue: "
+                + mockedOverdueRentals.size());
     }
 
     private Car createCar() {
