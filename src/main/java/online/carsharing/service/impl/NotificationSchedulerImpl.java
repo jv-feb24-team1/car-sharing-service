@@ -18,16 +18,10 @@ import org.springframework.stereotype.Service;
 public class NotificationSchedulerImpl implements NotificationScheduler {
     private static final String EXPIRED_RENTALS =
             "Overdue rental! \nRental Date: %s\nReturn Date: %s\nCar: %s\nUser: %s";
-    private static final String NO_RENTALS =
-            "No rentals overdue today!";
-    private static final String TIME_MORNING_REMINDER =
+    private static final String CRON_MORNING_REMINDER =
             "0 30 8 * * ?";
-    private static final String TIME_EVENING_REMINDER =
+    private static final String CRON_EVENING_REMINDER =
             "0 30 16 * * ?";
-    private static final String RENTAL_WARNING_TG_HEADER =
-            "Warning overdue rentals detected!";
-    private static final String RENTAL_WARNING_TG_TOTAL_OVERDUE =
-            "Total rentals overdue: ";
     private static final int DAY = 1;
 
     private final NotificationService notificationService;
@@ -37,14 +31,14 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
 
     @Override
     @Async
-    @Scheduled(cron = TIME_MORNING_REMINDER)
+    @Scheduled(cron = CRON_MORNING_REMINDER)
     public void morningReminder() {
         rentalReminder();
     }
 
     @Override
     @Async
-    @Scheduled(cron = TIME_EVENING_REMINDER)
+    @Scheduled(cron = CRON_EVENING_REMINDER)
     public void eveningReminder() {
         rentalReminder();
     }
@@ -54,29 +48,40 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
         List<Rental> overdueRentals = rentalRepository.findOverdueRentals(tomorrow);
 
         if (overdueRentals.isEmpty()) {
-            notificationService.sendNotification(NO_RENTALS);
+            notificationService.sendNotification("No rentals overdue today!");
         } else {
-            notificationService.sendNotification(RENTAL_WARNING_TG_HEADER);
+            notificationService.sendNotification("Warning overdue rentals detected!");
             for (Rental rental : overdueRentals) {
-                String carModel = carRepository.findById(rental
-                                .getCar()
-                                .getId())
-                        .map(car -> car.getModel())
-                        .orElse("Unknown Car");
-                String userEmail = userRepository.findById(rental
-                                .getUser()
-                                .getId())
-                        .map(user -> user.getEmail())
-                        .orElse("Unknown User");
-                String message = String.format(
-                        EXPIRED_RENTALS,
-                        rental.getRentalDate(),
-                        rental.getReturnDate(),
-                        carModel, userEmail);
-                notificationService.sendNotification(message);
+                notificationService.sendNotification(createRentalOverdueMessage(rental));
             }
-            notificationService.sendNotification(RENTAL_WARNING_TG_TOTAL_OVERDUE
+            notificationService.sendNotification("Total rentals overdue: "
                     + overdueRentals.size());
         }
+    }
+
+    private String createRentalOverdueMessage(Rental rental) {
+        return String.format(
+                EXPIRED_RENTALS,
+                rental.getRentalDate(),
+                rental.getReturnDate(),
+                searchOverdueRentalCarModel(rental),
+                searchOverdueRentalUserEmail(rental)
+        );
+    }
+
+    private String searchOverdueRentalCarModel(Rental rental) {
+        return carRepository.findById(rental
+                        .getCar()
+                        .getId())
+                .map(car -> car.getModel())
+                .orElse("Unknown Car");
+    }
+
+    private String searchOverdueRentalUserEmail(Rental rental) {
+        return userRepository.findById(rental
+                        .getUser()
+                        .getId())
+                .map(user -> user.getEmail())
+                .orElse("Unknown User");
     }
 }
