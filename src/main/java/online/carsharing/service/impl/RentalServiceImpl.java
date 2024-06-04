@@ -94,7 +94,9 @@ public class RentalServiceImpl implements RentalService {
         rental.setActualReturnDate(requestDto.getActualReturnDate());
         rental.setActive(false);
 
-        paymentService.createOverduePaymentIfNecessary(rental);
+        if (rental.getActualReturnDate().isAfter(rental.getReturnDate())) {
+            paymentService.createOverduePayment(rental);
+        }
 
         Car car = rental.getCar();
         car.setInventory(car.getInventory() + INVENTORY_ADJUSTMENT);

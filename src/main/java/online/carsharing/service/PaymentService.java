@@ -9,9 +9,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public interface PaymentService {
 
-    List<PaymentResponseDto> getAllPayments(UserDetails user, Pageable pageable);
-
-    List<PaymentResponseDto> getAllPaymentsByUserId(Long userId, Pageable pageable);
+    List<PaymentResponseDto> getPayments(
+            UserDetails userDetails, Long userId, Pageable pageable);
 
     PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto);
 
@@ -19,5 +18,5 @@ public interface PaymentService {
 
     void markPaymentAsCanceled(String sessionId);
 
-    void createOverduePaymentIfNecessary(Rental rental);
+    void createOverduePayment(Rental rental);
 }

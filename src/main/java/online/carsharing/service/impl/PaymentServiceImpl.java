@@ -18,7 +18,6 @@ import online.carsharing.exception.PaymentProcessingException;
 import online.carsharing.mapper.PaymentMapper;
 import online.carsharing.repository.payment.PaymentRepository;
 import online.carsharing.repository.rental.RentalRepository;
-import online.carsharing.repository.user.RoleRepository;
 import online.carsharing.repository.user.UserRepository;
 import online.carsharing.service.PaymentService;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,7 +31,7 @@ import org.springframework.stereotype.Service;
 public class PaymentServiceImpl implements PaymentService {
     private static final BigDecimal FINE_MULTIPLIER = BigDecimal.valueOf(1.5);
     private static final String PAYMENT_NAME = "Rental Payment for car";
-    private static final String CURRENCY = "usd";
+    private static final String CURRENCY = "USD";
     private static final Long RENT_QUANTITY = 1L;
     private static final Long CENTS_IN_DOLLAR = 100L;
     private static final String ROLE_MANAGER = "ROLE_MANAGER";
@@ -41,7 +40,6 @@ public class PaymentServiceImpl implements PaymentService {
     private final RentalRepository rentalRepository;
     private final UserRepository userRepository;
     private final PaymentMapper paymentMapper;
-    private final RoleRepository roleRepository;
 
     @Value("${stripe.success.url}")
     private String successUrl;
@@ -50,34 +48,30 @@ public class PaymentServiceImpl implements PaymentService {
     private String cancelUrl;
 
     @Override
-    public List<PaymentResponseDto> getAllPayments(UserDetails userDetails, Pageable pageable) {
+    public List<PaymentResponseDto> getPayments(
+            UserDetails userDetails, Long userId, Pageable pageable) {
         User user = userRepository.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "User not found with username: " + userDetails.getUsername()));
         if (isManager(user)) {
-            return paymentRepository.findAll(pageable).getContent().stream()
-                    .map(paymentMapper::toDto)
-                    .toList();
+            if (userId == null) {
+                return paymentRepository.findAll(pageable).getContent().stream()
+                        .map(paymentMapper::toDto)
+                        .toList();
+            } else if (userRepository.existsById(userId)) {
+                return getAllDtoPaymentsByUserId(userId, pageable);
+            } else {
+                throw new EntityNotFoundException("User not found with id: " + userId);
+            }
         }
         return getAllDtoPaymentsByUserId(user.getId(), pageable);
     }
 
     @Override
-    public List<PaymentResponseDto> getAllPaymentsByUserId(Long userId, Pageable pageable) {
-        if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("User not found with id: " + userId);
-        }
-        return getAllDtoPaymentsByUserId(userId, pageable);
-    }
-
-    @Override
-    public void createOverduePaymentIfNecessary(Rental rental) {
-        if (rental.getActualReturnDate() != null
-                && rental.getActualReturnDate().isAfter(rental.getReturnDate())) {
+    public void createOverduePayment(Rental rental) {
             BigDecimal overdueAmount = calculateAmount(
                     Payment.Type.FINE, rental, rental.getCar().getDailyFee());
             createAndSavePayment(overdueAmount, rental, Payment.Type.FINE);
-        }
     }
 
     @Override
@@ -159,8 +153,8 @@ public class PaymentServiceImpl implements PaymentService {
         return SessionCreateParams.builder()
                 .addLineItem(getLineItem(amount, car))
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(successUrl)
-                .setCancelUrl(cancelUrl)
+                .setSuccessUrl(successUrl + "{CHECKOUT_SESSION_ID}")
+                .setCancelUrl(cancelUrl + "{CHECKOUT_SESSION_ID}")
                 .build();
     }
 

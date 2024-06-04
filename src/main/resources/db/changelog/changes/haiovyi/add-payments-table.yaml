@@ -1,6 +1,6 @@
 databaseChangeLog:
   - changeSet:
-      id: 0
+      id: add-payments-table
       author: haiovyi
       changes:
         - createTable:
