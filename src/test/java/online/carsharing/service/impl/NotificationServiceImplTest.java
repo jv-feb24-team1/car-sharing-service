@@ -22,6 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class NotificationServiceImplTest {
+    public static final double CAR_DAILY_FEE = 100.0;
+    public static final String CAR_BRAND = "Brand";
+    public static final String CAR_MODEL = "Model";
+    public static final String EMAIL = "email";
+    public static final long USER_ID = 1L;
+    public static final long CAR_ID = 1L;
 
     @Mock
     private UserChatIdRepository chatIdRepository;
@@ -42,15 +48,15 @@ public class NotificationServiceImplTest {
     @BeforeEach
     public void setUp() {
         car = new Car();
-        car.setId(1L);
-        car.setBrand("Brand");
-        car.setModel("Model");
+        car.setId(CAR_ID);
+        car.setBrand(CAR_BRAND);
+        car.setModel(CAR_MODEL);
         car.setType(Type.SUV);
-        car.setDailyFee(BigDecimal.valueOf(100.0));
+        car.setDailyFee(BigDecimal.valueOf(CAR_DAILY_FEE));
 
         user = new User();
-        user.setId(1L);
-        user.setEmail("email");
+        user.setId(USER_ID);
+        user.setEmail(EMAIL);
 
         rental = new Rental();
         rental.setRentalDate(LocalDate.of(2024, 5, 1));
