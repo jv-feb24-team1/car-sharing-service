@@ -22,7 +22,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
-            "New car added! \nModel: *%s*\nBrand: *%s*\nType: *%s*\nDaily fee: *%s*";
+            "New car added! \nBrand: *%s*\nModel: *%s*\nType: *%s*\nDaily fee: *%s*";
     private static final String RENTAL_CREATION_TG_RESPONSE =
             "New rental created! \nRental Date: *%s*\nReturn Date: *%s*\nCar: *%s*\nTaken by: *%s*";
     private static final String TG_COMMAND_ADD_ME = "/addMe";
@@ -33,7 +33,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     private static final String TG_RESPONSE_EMAIL_NOTFOUND =
             "User does not have an Email in DB Be contact client immediately!";
 
-    private final UserChatIdRepository userChatIdRepository;
+    private final UserChatIdRepository chatRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
 
@@ -69,15 +69,15 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Override
     public void attachUserToChatId(Update update) {
-        Long userId = update.getMessage().getFrom().getId().longValue();
+        Long userTelegramId = update.getMessage().getFrom().getId();
         Long chatId = update.getMessage().getChatId();
-        UserChatId userChatId = userChatIdRepository.findByUserId(userId);
+        UserChatId userChatId = chatRepository.findByUserByTelegramId(userTelegramId);
         if (userChatId == null) {
             userChatId = new UserChatId();
-            userChatId.setUserId(userId);
+            userChatId.setUserTelegramId(userTelegramId);
         }
         userChatId.setChatId(chatId);
-        userChatIdRepository.save(userChatId);
+        chatRepository.save(userChatId);
         sendMessage(update, TG_RESPONSE_ADDED_SUCCESSFULLY);
     }
 
@@ -95,31 +95,16 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Override
     public void createCarNotification(Car car) {
-        List<Long> chatIds = userChatIdRepository.findAllChatIds();
         String messageText = String.format(CAR_CREATION_TG_RESPONSE,
-                car.getModel(), car.getBrand(),
+                car.getBrand(),
+                car.getModel(),
                 car.getType().toString(),
                 car.getDailyFee().toString());
-
-        for (Long chatId : chatIds) {
-            if (chatId != null) {
-                try {
-                    SendMessage message = SendMessage.builder()
-                            .chatId(chatId.toString())
-                            .text(messageText)
-                            .parseMode("Markdown")
-                            .build();
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        sendMessageToAllChats(messageText);
     }
 
     @Override
     public void createRentalNotification(Rental rental) {
-        List<Long> chatIds = userChatIdRepository.findAllChatIds();
         String email = userRepository.findById(rental.getUser().getId())
                 .map(User::getEmail)
                 .orElse(TG_RESPONSE_EMAIL_NOTFOUND);
@@ -129,6 +114,16 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
                 carRepository.modelCheckById(rental.getCar().getId()),
                 email
         );
+        sendMessageToAllChats(messageText);
+    }
+
+    @Override
+    public void sendNotification(String message) {
+        sendMessageToAllChats(message);
+    }
+
+    private void sendMessageToAllChats(String messageText) {
+        List<Long> chatIds = chatRepository.findAllChatIds();
         for (Long chatId : chatIds) {
             if (chatId != null) {
                 try {
