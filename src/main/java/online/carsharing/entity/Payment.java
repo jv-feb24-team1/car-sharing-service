@@ -7,6 +7,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.DecimalMin;
 import java.math.BigDecimal;
 import lombok.Data;
 
@@ -30,6 +31,7 @@ public class Payment {
 
     private String sessionId;
 
+    @DecimalMin(value = "0.5")
     private BigDecimal amountToPay;
 
     public enum Status {
