@@ -48,7 +48,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
-    public void testMorningReminder_NoOverdueRentals() {
+    public void sendMorningNotification_NoOverdueRentals_OK() {
         mockedOverdueRentals.clear();
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         when(rentalRepository.findOverdueRentals(tomorrow)).thenReturn(mockedOverdueRentals);
@@ -59,7 +59,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
-    public void testEveningReminder_NoOverdueRentals() {
+    public void sendEveningNotification_NoOverdueRentals_OK() {
         mockedOverdueRentals.clear();
         LocalDate tomorrow = LocalDate.now().plusDays(1);
         when(rentalRepository.findOverdueRentals(tomorrow)).thenReturn(mockedOverdueRentals);
@@ -70,7 +70,7 @@ public class NotificationSchedulerImplTest {
     }
 
     @Test
-    void testRentalReminder() {
+    void sendEveningNotification_OverdueRentalExist_OK() {
         Car car = createCar();
         User user = createUser();
 
