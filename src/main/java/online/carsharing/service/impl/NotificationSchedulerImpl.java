@@ -28,6 +28,10 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
             "Warning overdue rentals detected!";
     private static final String RENTAL_WARNING_TG_TOTAL_OVERDUE =
             "Total rentals overdue: ";
+    private static final String NO_CAR_WITH_ID =
+            "Unknown Car";
+    private static final String NO_USER_WITH_ID =
+            "Unknown User";
     private static final int DAY = 1;
 
     private final NotificationService notificationService;
@@ -58,25 +62,36 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
         } else {
             notificationService.sendNotification(RENTAL_WARNING_TG_HEADER);
             for (Rental rental : overdueRentals) {
-                String carModel = carRepository.findById(rental
-                                .getCar()
-                                .getId())
-                        .map(car -> car.getModel())
-                        .orElse("Unknown Car");
-                String userEmail = userRepository.findById(rental
-                                .getUser()
-                                .getId())
-                        .map(user -> user.getEmail())
-                        .orElse("Unknown User");
-                String message = String.format(
-                        EXPIRED_RENTALS,
-                        rental.getRentalDate(),
-                        rental.getReturnDate(),
-                        carModel, userEmail);
-                notificationService.sendNotification(message);
+                notificationService.sendNotification(createRentalOverdueMessage(rental));
             }
             notificationService.sendNotification(RENTAL_WARNING_TG_TOTAL_OVERDUE
                     + overdueRentals.size());
         }
+    }
+
+    private String searchOverdueRentalCarModel(Rental rental) {
+        return carRepository.findById(rental
+                        .getCar()
+                        .getId())
+                .map(car -> car.getModel())
+                .orElse(NO_CAR_WITH_ID);
+    }
+
+    private String searchOverdueRentalUserEmail(Rental rental) {
+        return userRepository.findById(rental
+                        .getUser()
+                        .getId())
+                .map(user -> user.getEmail())
+                .orElse(NO_USER_WITH_ID);
+    }
+
+    private String createRentalOverdueMessage(Rental rental) {
+        return String.format(
+                EXPIRED_RENTALS,
+                rental.getRentalDate(),
+                rental.getReturnDate(),
+                searchOverdueRentalCarModel(rental),
+                searchOverdueRentalUserEmail(rental)
+        );
     }
 }

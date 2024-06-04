@@ -23,9 +23,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
-            "New car added! \nBrand: *%s*\nModel: *%s*\nType: *%s*\nDaily fee: *%s*";
+            "New car added! \nBrand: %s\nModel: %s\nType: %s\nDaily fee: %s";
     private static final String RENTAL_CREATION_TG_RESPONSE =
-            "New rental created! \nRental Date: *%s*\nReturn Date: *%s*\nCar: *%s*\nTaken by: *%s*";
+            "New rental created! \nRental Date: %s\nReturn Date: %s\nCar: %s\nTaken by: %s";
     private static final String TG_COMMAND_ADD_ME = "/addMe";
     private static final String TG_COMMAND_START = "Start";
     private static final String TG_RESPONSE_UNKNOWN_COMMAND = "Unknown command";
@@ -33,6 +33,8 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
             "Registration successful! Welcome aboard!";
     private static final String TG_RESPONSE_EMAIL_NOTFOUND =
             "User does not have an Email in DB Be contact client immediately!";
+    private static final String TG_UNABLE_TO_SEND_MESSAGE =
+            "Unable to send message, exception: ";
 
     private final UserChatIdRepository chatRepository;
     private final UserRepository userRepository;
@@ -137,7 +139,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
                     .build());
         } catch (TelegramApiException e) {
             throw new TelegramUnableToSendMessageException(
-                    "Unable to send message, exception: " + e);
+                    TG_UNABLE_TO_SEND_MESSAGE + e);
         }
     }
 }
