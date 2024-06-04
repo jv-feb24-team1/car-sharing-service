@@ -92,6 +92,7 @@ and efficiency in mind.
 2. Type command /newbot, follow instructions to create new bot 
 
 ![botcreation.gif](doc%2Fgif%2Fbotcreation.gif)
+
 3. Copy bot name to set to environment variable BOT_NAME, and token to BOT_TOKEN 
    Example
    BOT_NAME = carservicetestbot243242424_bot
