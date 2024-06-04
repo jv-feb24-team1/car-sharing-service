@@ -90,6 +90,7 @@ and efficiency in mind.
 
 1. Open @BotFather - https://t.me/BotFather
 2. Type command /newbot, follow instructions to create new bot 
+
 ![botcreation.gif](doc%2Fgif%2Fbotcreation.gif)
 3. Copy bot name to set to environment variable BOT_NAME, and token to BOT_TOKEN 
    Example
@@ -97,6 +98,7 @@ and efficiency in mind.
    BOT_TOKEN = 7268155088:AAEFMSqL9Tj8BUDbFXOQIoAy_6IaFYW3Q74
 4. Open the chat with bot (in our example t.me/carservicetestbot243242424_bot)
 5. Input command /addMe for registration 
+
 ![botconnected.gif](doc%2Fgif%2Fbotconnected.gif)
 
 ## 📝 Usage
