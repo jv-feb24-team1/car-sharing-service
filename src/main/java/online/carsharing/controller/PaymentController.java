@@ -37,13 +37,15 @@ public class PaymentController {
     }
 
     @GetMapping("/success")
-    public ResponseEntity<String> handlePaymentSuccess(@RequestParam("session_id") String sessionId) {
+    public ResponseEntity<String> handlePaymentSuccess(
+            @RequestParam("session_id") String sessionId) {
         paymentService.markPaymentAsPaid(sessionId);
         return ResponseEntity.ok("Payment successful!");
     }
 
     @GetMapping("/cancel")
-    public ResponseEntity<String> handlePaymentCancel(@RequestParam("session_id") String sessionId) {
+    public ResponseEntity<String> handlePaymentCancel(
+            @RequestParam("session_id") String sessionId) {
         paymentService.markPaymentAsCanceled(sessionId);
         return ResponseEntity.ok("Payment process canceled.");
     }

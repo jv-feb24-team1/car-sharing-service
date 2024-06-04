@@ -69,9 +69,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void createOverduePayment(Rental rental) {
-            BigDecimal overdueAmount = calculateAmount(
-                    Payment.Type.FINE, rental, rental.getCar().getDailyFee());
-            createAndSavePayment(overdueAmount, rental, Payment.Type.FINE);
+        BigDecimal overdueAmount = calculateAmount(
+                Payment.Type.FINE, rental, rental.getCar().getDailyFee());
+        createAndSavePayment(overdueAmount, rental, Payment.Type.FINE);
     }
 
     @Override
@@ -87,7 +87,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         if (rental.getCar() == null) {
-            throw new EntityNotFoundException("Car not found from rental with id: " + rental.getId());
+            throw new EntityNotFoundException(
+                    "Car not found from rental with id: " + rental.getId());
         }
 
         BigDecimal amount = calculateAmount(
