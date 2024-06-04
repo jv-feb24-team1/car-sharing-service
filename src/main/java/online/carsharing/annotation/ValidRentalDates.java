@@ -12,7 +12,7 @@ import online.carsharing.validator.RentalDatesValidator;
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidRentalDates {
-    String message() default "Return date must be after rental date";
+    String message() default "Invalid dates! Please select future dates for rental";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }
