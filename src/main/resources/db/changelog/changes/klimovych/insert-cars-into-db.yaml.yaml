@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-cars-into-db
+      author: nklimovych
+      changes:
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Model X
+              - column:
+                  name: brand
+                  value: Tesla
+              - column:
+                  name: type
+                  value: SUV
+              - column:
+                  name: inventory
+                  value: "2"
+              - column:
+                  name: daily_fee
+                  valueNumeric: "24.99"
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Model Y
+              - column:
+                  name: brand
+                  value: Tesla
+              - column:
+                  name: type
+                  value: SEDAN
+              - column:
+                  name: inventory
+                  value: "2"
+              - column:
+                  name: daily_fee
+                  valueNumeric: "14.99"
+        - insert:
+            tableName: cars
+            columns:
+              - column:
+                  name: model
+                  value: Model S
+              - column:
+                  name: brand
+                  value: Tesla
+              - column:
+                  name: type
+                  value: SEDAN
+              - column:
+                  name: inventory
+                  value: "2"
+              - column:
+                  name: daily_fee
+                  valueNumeric: "19.99"
