@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import lombok.Data;
 
@@ -20,9 +21,11 @@ public class Payment {
     private long id;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Status status;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     private Type type;
 
     private Long rentalId;
