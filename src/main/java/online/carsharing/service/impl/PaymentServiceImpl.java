@@ -23,7 +23,6 @@ import online.carsharing.service.PaymentService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -49,22 +48,20 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public List<PaymentResponseDto> getPayments(
-            UserDetails userDetails, Long userId, Pageable pageable) {
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "User not found with username: " + userDetails.getUsername()));
+            Long userId, Long requestParamUserId, Pageable pageable) {
+        User user = findUserById(userId);
         if (isManager(user)) {
-            if (userId == null) {
+            if (requestParamUserId == null) {
                 return paymentRepository.findAll(pageable).getContent().stream()
                         .map(paymentMapper::toDto)
                         .toList();
-            } else if (userRepository.existsById(userId)) {
-                return getAllDtoPaymentsByUserId(userId, pageable);
+            } else if (userRepository.existsById(requestParamUserId)) {
+                return getAllDtoPaymentsByUserId(requestParamUserId, pageable);
             } else {
-                throw new EntityNotFoundException("User not found with id: " + userId);
+                throw new EntityNotFoundException("User not found with id: " + requestParamUserId);
             }
         }
-        return getAllDtoPaymentsByUserId(user.getId(), pageable);
+        return getAllDtoPaymentsByUserId(userId, pageable);
     }
 
     @Override
@@ -75,13 +72,14 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto) {
+    public PaymentResponseDto createPaymentSession(PaymentRequestDto requestDto, Long userId) {
         Payment paymentEntity = paymentMapper.toEntity(requestDto);
         Rental rental = rentalRepository.findByIdWithCar(paymentEntity.getRentalId())
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Rental not found with id: " + paymentEntity.getRentalId()));
 
-        if (rentalRepository.existsPendingPaymentsByUserId(rental.getUser().getId())) {
+        if (rentalRepository.existsPendingPaymentsByUserId(rental.getUser().getId())
+                || !rental.getUser().getId().equals(userId)) {
             throw new PaymentProcessingException(
                     "User already have active rentals or pending payments");
         }
@@ -199,5 +197,11 @@ public class PaymentServiceImpl implements PaymentService {
         return user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch(authority -> authority.equals(ROLE_MANAGER));
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "User not found by id: " + userId));
     }
 }

@@ -7,11 +7,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import online.carsharing.dto.request.payment.PaymentRequestDto;
 import online.carsharing.dto.response.payment.PaymentResponseDto;
+import online.carsharing.entity.User;
 import online.carsharing.service.PaymentService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,10 +37,10 @@ public class PaymentController {
     )
     @GetMapping
     public List<PaymentResponseDto> getPayments(
-            @AuthenticationPrincipal UserDetails userDetails,
-            @RequestParam("user_id") Long userId,
+            @AuthenticationPrincipal User user,
+            @RequestParam("user_id") Long requestParamUserId,
             Pageable pageable) {
-        return paymentService.getPayments(userDetails, userId, pageable);
+        return paymentService.getPayments(user.getId(), requestParamUserId, pageable);
     }
 
     @Operation(
@@ -50,8 +50,8 @@ public class PaymentController {
     )
     @PostMapping
     public PaymentResponseDto createPaymentSession(
-            @RequestBody @Valid PaymentRequestDto requestDto) {
-        return paymentService.createPaymentSession(requestDto);
+            @RequestBody @Valid PaymentRequestDto requestDto, @AuthenticationPrincipal User user) {
+        return paymentService.createPaymentSession(requestDto, user.getId());
     }
 
     @Operation(
