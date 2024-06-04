@@ -84,6 +84,4 @@ public class NotificationSchedulerImpl implements NotificationScheduler {
                 .map(user -> user.getEmail())
                 .orElse("Unknown User");
     }
-
-
 }
