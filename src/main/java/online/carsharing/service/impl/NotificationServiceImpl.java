@@ -6,6 +6,7 @@ import online.carsharing.entity.Car;
 import online.carsharing.entity.Rental;
 import online.carsharing.entity.User;
 import online.carsharing.entity.UserChatId;
+import online.carsharing.exception.TelegramUnableToSendMessageException;
 import online.carsharing.repository.car.CarRepository;
 import online.carsharing.repository.user.UserChatIdRepository;
 import online.carsharing.repository.user.UserRepository;
@@ -22,9 +23,9 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class NotificationServiceImpl extends TelegramLongPollingBot implements NotificationService {
     private static final String CAR_CREATION_TG_RESPONSE =
-            "New car added! \nBrand: *%s*\nModel: *%s*\nType: *%s*\nDaily fee: *%s*";
+            "New car added! \nBrand: %s\nModel: %s\nType: %s\nDaily fee: %s";
     private static final String RENTAL_CREATION_TG_RESPONSE =
-            "New rental created! \nRental Date: *%s*\nReturn Date: *%s*\nCar: *%s*\nTaken by: *%s*";
+            "New rental created! \nRental Date: %s\nReturn Date: %s\nCar: %s\nTaken by: %s";
     private static final String TG_COMMAND_ADD_ME = "/addMe";
     private static final String TG_COMMAND_START = "Start";
     private static final String TG_RESPONSE_UNKNOWN_COMMAND = "Unknown command";
@@ -82,15 +83,11 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     @Override
-    public void sendMessage(Update update, String text) {
+    public void sendMessage(Update update, String messageText) {
         Long chatId = update.hasMessage()
                 ? update.getMessage().getChatId()
                 : update.getCallbackQuery().getFrom().getId();
-        try {
-            execute(SendMessage.builder().chatId(chatId.toString()).text(text).build());
-        } catch (TelegramApiException e) {
-            e.printStackTrace();
-        }
+        executeMessage(chatId, messageText);
     }
 
     @Override
@@ -126,17 +123,21 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
         List<Long> chatIds = userChatIdRepository.findAllChatIds();
         for (Long chatId : chatIds) {
             if (chatId != null) {
-                try {
-                    SendMessage message = SendMessage.builder()
-                            .chatId(chatId.toString())
-                            .text(messageText)
-                            .parseMode("Markdown")
-                            .build();
-                    execute(message);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
+                executeMessage(chatId, messageText);
             }
+        }
+    }
+
+    private void executeMessage(Long chatId, String messageText) {
+        try {
+            execute(SendMessage
+                    .builder()
+                    .chatId(chatId.toString())
+                    .text(messageText)
+                    .build());
+        } catch (TelegramApiException e) {
+            throw new TelegramUnableToSendMessageException(
+                    "Unable to send message, exception: " + e);
         }
     }
 }
