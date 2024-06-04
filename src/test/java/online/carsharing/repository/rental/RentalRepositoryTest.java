@@ -19,7 +19,7 @@ import org.springframework.test.context.jdbc.Sql;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class RentalRepositoryTest {
-    public static final String TEST_DATABASE = "classpath:database/rental-test-db.sql";
+    public static final String TEST_DATABASE = "classpath:db.script/rental-test-db.sql";
     private static final long NO_RENTALS_USER_ID = 4L;
     private static final long USER_ID = 1L;
     private static final int EXPECTED_SIZE = 1;

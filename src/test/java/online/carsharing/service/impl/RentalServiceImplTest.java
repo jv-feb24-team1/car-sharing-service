@@ -51,6 +51,7 @@ public class RentalServiceImplTest {
     private static final long RENTAL_ID = 1L;
     private static final int INACTIVE_RENTALS_AMOUNT = 5;
     private static final long NON_EXISTENT_RENTAL_ID = 100L;
+    private static final int CAR_INVENTORY_SIZE = 2;
 
     @Mock
     private UserRepository userRepository;
@@ -93,7 +94,7 @@ public class RentalServiceImplTest {
 
         car = new Car();
         car.setId(CAR_ID);
-        car.setInventory(2);
+        car.setInventory(CAR_INVENTORY_SIZE);
 
         validRental = new Rental();
         validRental.setRentalDate(RENTAL_DATE);
@@ -338,4 +339,3 @@ public class RentalServiceImplTest {
         return rentals;
     }
 }
-
