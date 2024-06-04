@@ -22,6 +22,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class NotificationServiceImplTest {
+    private static final LocalDate RETURN_DATE =
+            LocalDate.of(2024, 5, 11);
+    private static final LocalDate RENTAL_DATE =
+            LocalDate.of(2024, 5, 1);
+    private static final int NUMBER_OF_INVOCATIONS = 1;
     private static final double CAR_DAILY_FEE = 100.0;
     private static final String CAR_BRAND = "Brand";
     private static final String CAR_MODEL = "Model";
@@ -59,8 +64,8 @@ public class NotificationServiceImplTest {
         user.setEmail(EMAIL);
 
         rental = new Rental();
-        rental.setRentalDate(LocalDate.of(2024, 5, 1));
-        rental.setReturnDate(LocalDate.of(2024, 5, 11));
+        rental.setRentalDate(RENTAL_DATE);
+        rental.setReturnDate(RETURN_DATE);
         rental.setUser(user);
         rental.setCar(car);
     }
@@ -73,7 +78,7 @@ public class NotificationServiceImplTest {
         notificationServiceMock.createCarNotification(car);
         Mockito.verify(
                 notificationServiceMock,
-                times(1)).createCarNotification(car);
+                times(NUMBER_OF_INVOCATIONS)).createCarNotification(car);
     }
 
     @Test
@@ -84,16 +89,16 @@ public class NotificationServiceImplTest {
         UserRepository userRepositoryMock = Mockito.mock(UserRepository.class);
         CarRepository carRepositoryMock = Mockito.mock(CarRepository.class);
         Mockito.when(userRepositoryMock
-                .findById(1L))
+                .findById(USER_ID))
                 .thenReturn(Optional.of(user));
         Mockito.when(carRepositoryMock
-                .modelCheckById(1L))
+                .modelCheckById(CAR_ID))
                 .thenReturn("Car Model");
         notificationServiceMock
                 .createRentalNotification(rental);
         Mockito.verify(
                 notificationServiceMock,
-                times(1))
+                times(NUMBER_OF_INVOCATIONS))
                 .createRentalNotification(rental);
     }
 }
