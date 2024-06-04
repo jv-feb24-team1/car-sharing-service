@@ -87,7 +87,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
 
         if (rental.getCar() == null) {
-            throw new EntityNotFoundException("Car not found with id: " + rental.getCar().getId());
+            throw new EntityNotFoundException("Car not found from rental with id: " + rental.getId());
         }
 
         BigDecimal amount = calculateAmount(
