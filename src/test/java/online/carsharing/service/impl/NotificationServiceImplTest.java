@@ -29,6 +29,8 @@ public class NotificationServiceImplTest {
     private static final long USER_ID = 1L;
     private static final long CAR_ID = 1L;
 
+    @InjectMocks
+    private NotificationServiceImpl notificationService;
     @Mock
     private UserChatIdRepository chatIdRepository;
 
@@ -37,9 +39,6 @@ public class NotificationServiceImplTest {
 
     @Mock
     private CarRepository carRepository;
-
-    @InjectMocks
-    private NotificationServiceImpl notificationService;
 
     private Rental rental;
     private User user;
@@ -71,7 +70,8 @@ public class NotificationServiceImplTest {
         NotificationServiceImpl notificationServiceMock =
                 Mockito.mock(NotificationServiceImpl.class);
         notificationServiceMock.createCarNotification(car);
-        Mockito.verify(notificationServiceMock,
+        Mockito.verify(
+                notificationServiceMock,
                 times(1)).createCarNotification(car);
     }
 
@@ -82,10 +82,17 @@ public class NotificationServiceImplTest {
                 Mockito.mock(NotificationServiceImpl.class);
         UserRepository userRepositoryMock = Mockito.mock(UserRepository.class);
         CarRepository carRepositoryMock = Mockito.mock(CarRepository.class);
-        Mockito.when(userRepositoryMock.findById(1L)).thenReturn(Optional.of(user));
-        Mockito.when(carRepositoryMock.modelCheckById(1L)).thenReturn("Car Model");
-        notificationServiceMock.createRentalNotification(rental);
-        Mockito.verify(notificationServiceMock,
-                times(1)).createRentalNotification(rental);
+        Mockito.when(userRepositoryMock
+                .findById(1L))
+                .thenReturn(Optional.of(user));
+        Mockito.when(carRepositoryMock
+                .modelCheckById(1L))
+                .thenReturn("Car Model");
+        notificationServiceMock
+                .createRentalNotification(rental);
+        Mockito.verify(
+                notificationServiceMock,
+                times(1))
+                .createRentalNotification(rental);
     }
 }
