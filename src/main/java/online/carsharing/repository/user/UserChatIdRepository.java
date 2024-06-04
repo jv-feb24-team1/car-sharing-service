@@ -9,6 +9,6 @@ public interface UserChatIdRepository extends JpaRepository<UserChatId, Long> {
     @Query("SELECT DISTINCT uc.chatId FROM UserChatId uc")
     List<Long> findAllChatIds();
     
-    @Query("SELECT uc FROM UserChatId uc WHERE uc.userId = :userId")
-    UserChatId findByUserId(Long userId);
+    @Query("SELECT uc FROM UserChatId uc WHERE uc.userTelegramId = :userTelegramId")
+    UserChatId findByUserByTelegramId(Long userTelegramId);
 }

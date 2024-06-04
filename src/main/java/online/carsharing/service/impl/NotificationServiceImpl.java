@@ -33,7 +33,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     private static final String TG_RESPONSE_EMAIL_NOTFOUND =
             "User does not have an Email in DB Be contact client immediately!";
 
-    private final UserChatIdRepository userChatIdRepository;
+    private final UserChatIdRepository chatRepository;
     private final UserRepository userRepository;
     private final CarRepository carRepository;
 
@@ -69,15 +69,15 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
 
     @Override
     public void attachUserToChatId(Update update) {
-        Long userId = update.getMessage().getFrom().getId();
+        Long userTelegramId = update.getMessage().getFrom().getId();
         Long chatId = update.getMessage().getChatId();
-        UserChatId userChatId = userChatIdRepository.findByUserId(userId);
+        UserChatId userChatId = chatRepository.findByUserByTelegramId(userTelegramId);
         if (userChatId == null) {
             userChatId = new UserChatId();
-            userChatId.setUserId(userId);
+            userChatId.setUserTelegramId(userTelegramId);
         }
         userChatId.setChatId(chatId);
-        userChatIdRepository.save(userChatId);
+        chatRepository.save(userChatId);
         sendMessage(update, TG_RESPONSE_ADDED_SUCCESSFULLY);
     }
 
@@ -123,7 +123,7 @@ public class NotificationServiceImpl extends TelegramLongPollingBot implements N
     }
 
     private void sendMessageToAllChats(String messageText) {
-        List<Long> chatIds = userChatIdRepository.findAllChatIds();
+        List<Long> chatIds = chatRepository.findAllChatIds();
         for (Long chatId : chatIds) {
             if (chatId != null) {
                 try {
