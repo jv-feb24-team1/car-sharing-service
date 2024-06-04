@@ -23,6 +23,8 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 public class NotificationSchedulerImplTest {
+    private static final LocalDate RENTAL_DATE = LocalDate.ofEpochDay(2024 - 05 - 01);
+    private static final LocalDate RETURN_DATE = LocalDate.ofEpochDay(2024 - 05 - 11);
     private static final String CAR_MODEL = "Model";
     private static final String EMAIL = "email";
     private static final int ADD_DAY = 1;
@@ -68,8 +70,8 @@ public class NotificationSchedulerImplTest {
         Car car = createCar();
         User user = createUser();
         Rental rental = new Rental();
-        rental.setRentalDate(LocalDate.ofEpochDay(2024 - 05 - 01));
-        rental.setReturnDate(LocalDate.ofEpochDay(2024 - 05 - 11));
+        rental.setRentalDate(RENTAL_DATE);
+        rental.setReturnDate(RETURN_DATE);
         rental.setCar(car);
         rental.setUser(user);
         mockedOverdueRentals.add(rental);
