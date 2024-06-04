@@ -70,6 +70,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return getStandartTemplateOfResponseEntity(ex, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(PaymentProcessingException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ResponseEntity<ErrorResponse> handlePaymentProcessingException(
+            PaymentProcessingException ex) {
+        return getStandartTemplateOfResponseEntity(ex, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(TelegramUnableToSendMessageException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<ErrorResponse> handleTelegramUnableToSendMessageException(
