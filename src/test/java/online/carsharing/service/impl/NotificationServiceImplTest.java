@@ -22,12 +22,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 public class NotificationServiceImplTest {
-    public static final double CAR_DAILY_FEE = 100.0;
-    public static final String CAR_BRAND = "Brand";
-    public static final String CAR_MODEL = "Model";
-    public static final String EMAIL = "email";
-    public static final long USER_ID = 1L;
-    public static final long CAR_ID = 1L;
+    private static final double CAR_DAILY_FEE = 100.0;
+    private static final String CAR_BRAND = "Brand";
+    private static final String CAR_MODEL = "Model";
+    private static final String EMAIL = "email";
+    private static final long USER_ID = 1L;
+    private static final long CAR_ID = 1L;
 
     @Mock
     private UserChatIdRepository chatIdRepository;
