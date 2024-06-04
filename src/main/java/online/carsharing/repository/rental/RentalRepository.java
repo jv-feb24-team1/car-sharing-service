@@ -1,5 +1,6 @@
 package online.carsharing.repository.rental;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import online.carsharing.entity.Payment;
@@ -28,4 +29,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
             + "WHERE r.user.id = :userId AND EXISTS "
             + "(SELECT p FROM Payment p WHERE p.rentalId = r.id AND p.status = 'PENDING')")
     boolean existsPendingPaymentsByUserId(Long userId);
+
+    @Query("SELECT r FROM Rental r LEFT JOIN FETCH r.car LEFT JOIN FETCH"
+            + " r.user WHERE r.returnDate <= :tomorrow AND r.actualReturnDate IS NULL")
+    List<Rental> findOverdueRentals(LocalDate tomorrow);
 }
