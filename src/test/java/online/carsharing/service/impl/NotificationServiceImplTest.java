@@ -31,6 +31,7 @@ public class NotificationServiceImplTest {
 
     @InjectMocks
     private NotificationServiceImpl notificationService;
+
     @Mock
     private UserChatIdRepository chatIdRepository;
 
