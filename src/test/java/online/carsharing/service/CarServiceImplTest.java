@@ -5,6 +5,7 @@ import static online.carsharing.util.CarTestConstants.CAR_MODEL;
 import static online.carsharing.util.CarTestConstants.DEFAULT_DAILY_FEE;
 import static online.carsharing.util.CarTestConstants.DEFAULT_ID;
 import static online.carsharing.util.CarTestConstants.DEFAULT_INVENTORY;
+import static online.carsharing.util.CarTestConstants.UNIT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,37 +40,36 @@ class CarServiceImplTest {
     private CarRepository carRepository;
     @Mock
     private CarMapper carMapper;
-
     private CarService carService;
+    private final Car car = new Car();
+    private final CreateCarRequestDto requestDto = new CreateCarRequestDto();
+    private final CarResponseDto carResponseDto = new CarResponseDto();
 
     @BeforeEach
     void setUp() {
         carService = new CarServiceImpl(notificationService, carMapper, carRepository);
-    }
 
-    @Test
-    @DisplayName("Verify save() method works")
-    void save_ValidCreateCarRequestDto_ReturnsCarResponseDto() {
-        CreateCarRequestDto requestDto = new CreateCarRequestDto();
-        requestDto.setModel(CAR_MODEL);
-        requestDto.setBrand(CAR_BRAND);
-        requestDto.setType(Type.SEDAN);
-        requestDto.setInventory(DEFAULT_INVENTORY);
-        requestDto.setDailyFee(DEFAULT_DAILY_FEE);
-
-        Car car = new Car();
         car.setModel(CAR_MODEL);
         car.setBrand(CAR_BRAND);
         car.setType(Type.SEDAN);
         car.setInventory(DEFAULT_INVENTORY);
         car.setDailyFee(DEFAULT_DAILY_FEE);
 
-        CarResponseDto carResponseDto = new CarResponseDto();
+        requestDto.setModel(CAR_MODEL);
+        requestDto.setBrand(CAR_BRAND);
+        requestDto.setType(Type.SEDAN);
+        requestDto.setInventory(DEFAULT_INVENTORY);
+        requestDto.setDailyFee(DEFAULT_DAILY_FEE);
+
         carResponseDto.setModel(CAR_MODEL);
         carResponseDto.setBrand(CAR_BRAND);
         carResponseDto.setType(Type.SEDAN);
         carResponseDto.setDailyFee(DEFAULT_DAILY_FEE);
+    }
 
+    @Test
+    @DisplayName("Verify save() method works")
+    void save_ValidCreateCarRequestDto_ReturnsCarResponseDto() {
         when(carMapper.toCar(requestDto)).thenReturn(car);
         when(carRepository.save(car)).thenReturn(car);
         when(carMapper.toDto(car)).thenReturn(carResponseDto);
@@ -85,38 +85,17 @@ class CarServiceImplTest {
     void findAll_ValidPageable_ReturnsCarResponseDtoList() {
         when(carRepository.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of(new Car())));
-
-        CarResponseDto carResponseDto = new CarResponseDto();
-        carResponseDto.setModel(CAR_MODEL);
-        carResponseDto.setBrand(CAR_BRAND);
-        carResponseDto.setType(Type.SEDAN);
-        carResponseDto.setDailyFee(DEFAULT_DAILY_FEE);
-
         when(carMapper.toDto(any())).thenReturn(carResponseDto);
 
         List<CarResponseDto> result = carService.findAll(Pageable.unpaged());
         assertNotNull(result);
-        assertEquals(result.size(), 1);
-        assertEquals(result.get(0).getModel(), carResponseDto.getModel());
+        assertEquals(result.size(), UNIT);
+        assertEquals(result.getFirst().getModel(), carResponseDto.getModel());
     }
 
     @Test
     @DisplayName("Verify getById() method works")
     void getById_ValidId_ReturnsCarResponseDto() {
-        Car car = new Car();
-        car.setId(DEFAULT_ID);
-        car.setModel(CAR_MODEL);
-        car.setBrand(CAR_BRAND);
-        car.setType(Type.SEDAN);
-        car.setDailyFee(DEFAULT_DAILY_FEE);
-
-        CarResponseDto carResponseDto = new CarResponseDto();
-        carResponseDto.setId(DEFAULT_ID);
-        carResponseDto.setModel(CAR_MODEL);
-        carResponseDto.setBrand(CAR_BRAND);
-        carResponseDto.setType(Type.SEDAN);
-        carResponseDto.setDailyFee(DEFAULT_DAILY_FEE);
-
         when(carRepository.findById(DEFAULT_ID)).thenReturn(Optional.of(car));
         when(carMapper.toDto(car)).thenReturn(carResponseDto);
 
@@ -131,6 +110,6 @@ class CarServiceImplTest {
         when(carRepository.existsById(DEFAULT_ID)).thenReturn(true);
         doNothing().when(carRepository).deleteById(DEFAULT_ID);
         carService.deleteById(DEFAULT_ID);
-        verify(carRepository, times(1)).deleteById(DEFAULT_ID);
+        verify(carRepository, times(UNIT)).deleteById(DEFAULT_ID);
     }
 }

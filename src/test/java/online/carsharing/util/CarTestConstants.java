@@ -17,4 +17,5 @@ public class CarTestConstants {
     public static final Integer DEFAULT_INVENTORY = 5;
     public static final BigDecimal DEFAULT_DAILY_FEE = BigDecimal.valueOf(100.55);
     public static final BigDecimal SECOND_CAR_DAILY_FEE = BigDecimal.valueOf(150.45);
+    public static final int UNIT = 1;
 }
