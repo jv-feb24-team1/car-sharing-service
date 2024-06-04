@@ -6,7 +6,6 @@ import static online.carsharing.util.UserTestConstants.DB_PATH;
 import static online.carsharing.util.UserTestConstants.LOGIN_PATH;
 import static online.carsharing.util.UserTestConstants.REGISTER_PATH;
 import static online.carsharing.util.UserTestConstants.TOKEN_REGEX;
-import static online.carsharing.util.UserTestConstants.USER_EMAIL;
 import static online.carsharing.util.UserTestConstants.USER_FIRST_NAME;
 import static online.carsharing.util.UserTestConstants.USER_LAST_NAME;
 import static online.carsharing.util.UserTestConstants.USER_PASSWORD;
@@ -57,7 +56,7 @@ class AuthenticationControllerTest {
         userRequest.setLastName(
                 USER_LAST_NAME);
         userRequest.setEmail(
-                USER_EMAIL);
+                "test@mate.com");
         userRequest.setPassword(
                 USER_PASSWORD);
         userRequest.setConfirmPassword(
@@ -82,7 +81,7 @@ class AuthenticationControllerTest {
                 () -> assertEquals(
                         USER_LAST_NAME, responseDto.getLastName()),
                 () -> assertEquals(
-                        USER_EMAIL, responseDto.getEmail())
+                        "test@mate.com", responseDto.getEmail())
         );
     }
 
