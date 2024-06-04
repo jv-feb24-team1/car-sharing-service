@@ -23,9 +23,9 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 public class NotificationSchedulerImplTest {
-    public static final String CAR_MODEL = "Model";
-    public static final String EMAIL = "email";
-    public static final int ADD_DAY = 1;
+    private static final String CAR_MODEL = "Model";
+    private static final String EMAIL = "email";
+    private static final int ADD_DAY = 1;
 
     @InjectMocks
     private NotificationSchedulerImpl scheduler;
