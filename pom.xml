@@ -24,6 +24,7 @@
         <maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
         <jjwt.version>0.11.5</jjwt.version>
         <testcontainers.version>1.19.7</testcontainers.version>
+        <stripe.version>25.9.0</stripe.version>
     </properties>
     <dependencies>
         <dependency>
@@ -137,9 +138,18 @@
             <artifactId>h2</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.stripe</groupId>
+            <artifactId>stripe-java</artifactId>
+            <version>${stripe.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots</artifactId>
             <version>6.9.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>
