@@ -34,8 +34,9 @@ import org.springframework.data.domain.Pageable;
 @ExtendWith(MockitoExtension.class)
 class CarServiceImplTest {
     @Mock
+    private NotificationService notificationService;
+    @Mock
     private CarRepository carRepository;
-
     @Mock
     private CarMapper carMapper;
 
@@ -43,7 +44,7 @@ class CarServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        carService = new CarServiceImpl(carMapper, carRepository);
+        carService = new CarServiceImpl(notificationService, carMapper, carRepository);
     }
 
     @Test
