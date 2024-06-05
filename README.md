@@ -169,35 +169,6 @@ endpoints and their functionalities.
 - **Other services interact with it to send notifications to car sharing service administrators**.
 - **Uses Telegram API, Telegram Chats, and Bots**.
 
-## 🔧 CI/CD Configuration
-
-### Checkstyle Configuration
-
-Add Checkstyle to `pom.xml` and create a `checkstyle.xml` in the root directory.
-
-### GitHub Actions
-
-Create a `.github/workflows/ci.yml` file:
-```yaml
-name: Java CI
-
-on: [push, pull_request]
-
-jobs:
-   build:
-      runs-on: ubuntu-latest
-
-      steps:
-         - uses: actions/checkout@v2
-         - name: Set up JDK 21
-           uses: actions/setup-java@v2
-           with:
-              java-version: '21'
-              distribution: 'adopt'
-              cache: maven
-         - name: Build with Maven
-           run: mvn --batch-mode --update-snapshots verify
-```
 ## 📄 Challenges and Solutions
 
 - **Database Configuration**: Used MySQL for local development and H2 for CI/CD testing.
