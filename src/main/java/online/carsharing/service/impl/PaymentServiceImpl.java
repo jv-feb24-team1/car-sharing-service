@@ -3,6 +3,7 @@ package online.carsharing.service.impl;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -47,6 +48,7 @@ public class PaymentServiceImpl implements PaymentService {
     private String cancelUrl;
 
     @Override
+    @Transactional
     public List<PaymentResponseDto> getPayments(
             Long userId, Long requestParamUserId, Pageable pageable) {
         User user = findUserById(userId);
