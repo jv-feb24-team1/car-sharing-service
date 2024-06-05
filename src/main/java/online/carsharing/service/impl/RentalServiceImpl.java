@@ -21,6 +21,7 @@ import online.carsharing.service.PaymentService;
 import online.carsharing.service.RentalService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -84,6 +85,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     @Override
+    @Transactional
     public RentalResponseDto setActualReturnDate(Long rentalId, ActualReturnDateDto requestDto) {
         Rental rental = getRental(rentalId);
 
@@ -94,15 +96,15 @@ public class RentalServiceImpl implements RentalService {
         rental.setActualReturnDate(requestDto.getActualReturnDate());
         rental.setActive(false);
 
-        if (rental.getActualReturnDate().isAfter(rental.getReturnDate())) {
-            paymentService.createOverduePayment(rental);
-        }
-
         Car car = rental.getCar();
         car.setInventory(car.getInventory() + INVENTORY_ADJUSTMENT);
         carRepository.save(car);
 
         Rental savedRental = rentalRepository.save(rental);
+
+        if (rental.getActualReturnDate().isAfter(rental.getReturnDate())) {
+            paymentService.createOverduePayment(rental);
+        }
         return rentalMapper.toDto(savedRental);
     }
 
@@ -117,7 +119,7 @@ public class RentalServiceImpl implements RentalService {
     }
 
     private Rental getRental(Long rentalId) {
-        return rentalRepository.findById(rentalId).orElseThrow(() ->
+        return rentalRepository.findByIdWithCar(rentalId).orElseThrow(() ->
                 new EntityNotFoundException("Rental not found with id " + rentalId));
     }
 

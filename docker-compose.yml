@@ -33,7 +33,12 @@ services:
       "spring.datasource.username": "${MYSQLDB_USER}", 
       "spring.datasource.password": "${MYSQLDB_PASSWORD}", 
       "jwt.secret.key": "${JWT_SECRET_KEY}",
-      "jwt.expiration.time":"${JWT_EXPIRATION_TIME}"
+      "jwt.expiration.time": "${JWT_EXPIRATION_TIME}",
+      "bot.botname": "${BOT_NAME}",
+      "bot.bottoken": "${BOT_TOKEN}",
+      "stripe.success.url": "${STRIPE_SUCCESS_URL}",
+      "stripe.cancel.url": "${STRIPE_CANCEL_URL}",
+      "stripe.api.key": "${STRIPE_PUBLIC_KEY}"
       }'
       JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
 

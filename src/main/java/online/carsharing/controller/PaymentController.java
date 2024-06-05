@@ -38,9 +38,9 @@ public class PaymentController {
     @GetMapping
     public List<PaymentResponseDto> getPayments(
             @AuthenticationPrincipal User user,
-            @RequestParam("user_id") Long requestParamUserId,
+            @RequestParam(required = false) Long userId,
             Pageable pageable) {
-        return paymentService.getPayments(user.getId(), requestParamUserId, pageable);
+        return paymentService.getPayments(user.getId(), userId, pageable);
     }
 
     @Operation(

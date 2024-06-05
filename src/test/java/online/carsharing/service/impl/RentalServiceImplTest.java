@@ -43,8 +43,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RentalServiceImplTest {
     private static final int ACTIVE_RENTALS_AMOUNT = 3;
     private static final LocalDate RENTAL_DATE = LocalDate.now().minusDays(ACTIVE_RENTALS_AMOUNT);
-    private static final int INVENTORY_ADJASTMENT = 1;
-    private static final LocalDate RETURN_DATE = LocalDate.now().plusDays(INVENTORY_ADJASTMENT);
+    private static final int INVENTORY_ADJUSTMENT = 1;
+    private static final LocalDate RETURN_DATE = LocalDate.now().plusDays(INVENTORY_ADJUSTMENT);
     private static final long CAR_ID = 1L;
     private static final long MANAGER_ID = 1L;
     private static final long CUSTOMER_ID = 2L;
@@ -168,7 +168,7 @@ public class RentalServiceImplTest {
     public void getById_ValidRental_RentalResponseDto() {
         RentalResponseDto expectedResponseDto = getRentalResponseDto(validRental);
 
-        when(rentalRepository.findById(RENTAL_ID)).thenReturn(Optional.of(validRental));
+        when(rentalRepository.findByIdWithCar(RENTAL_ID)).thenReturn(Optional.of(validRental));
         when(rentalMapper.toDto(validRental)).thenReturn(expectedResponseDto);
 
         RentalResponseDto actualRentalResponseDto = rentalService.getById(RENTAL_ID);
@@ -180,7 +180,7 @@ public class RentalServiceImplTest {
     @Test
     @DisplayName("getById throws EntityNotFoundException for non-existent rental")
     public void getById_NonExistentRental_ThrowsException() {
-        when(rentalRepository.findById(NON_EXISTENT_RENTAL_ID)).thenReturn(Optional.empty());
+        when(rentalRepository.findByIdWithCar(NON_EXISTENT_RENTAL_ID)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () ->
                 rentalService.getById(NON_EXISTENT_RENTAL_ID));
@@ -265,7 +265,7 @@ public class RentalServiceImplTest {
         ActualReturnDateDto requestDto = new ActualReturnDateDto();
         requestDto.setActualReturnDate(LocalDate.now());
 
-        when(rentalRepository.findById(RENTAL_ID)).thenReturn(Optional.of(validRental));
+        when(rentalRepository.findByIdWithCar(RENTAL_ID)).thenReturn(Optional.of(validRental));
 
         assertThrows(InvalidInputDataException.class, () ->
                 rentalService.setActualReturnDate(RENTAL_ID, requestDto));
@@ -277,13 +277,13 @@ public class RentalServiceImplTest {
         ActualReturnDateDto requestDto = new ActualReturnDateDto();
         requestDto.setActualReturnDate(LocalDate.now());
 
-        when(rentalRepository.findById(RENTAL_ID)).thenReturn(Optional.of(validRental));
+        when(rentalRepository.findByIdWithCar(RENTAL_ID)).thenReturn(Optional.of(validRental));
 
         int carInventoryBefore = car.getInventory();
         rentalService.setActualReturnDate(RENTAL_ID, requestDto);
 
         assertNotNull(validRental.getActualReturnDate());
-        assertEquals(carInventoryBefore + INVENTORY_ADJASTMENT, car.getInventory());
+        assertEquals(carInventoryBefore + INVENTORY_ADJUSTMENT, car.getInventory());
         assertFalse(validRental.isActive());
 
         verify(rentalRepository).save(validRental);
